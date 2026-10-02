@@ -54,6 +54,12 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
+## Deployment
+
+GitHub Actions deploys the storefront to GitHub Pages whenever changes are pushed to `main`.
+After the first deployment completes, the site is available at
+<https://dachi-ghambashidze-alive.github.io/shoeshop/>.
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
