@@ -1,0 +1,16 @@
+@import './app/shoe-landing/shoe-landing.css';
+
+app-shoe-landing {
+	--ink: #171716;
+	--muted: #72716d;
+	--line: #e5e2da;
+	--paper: #fff;
+	--soft: #f4f2ec;
+	--gold: #b8933f;
+	display: block;
+	min-height: 100vh;
+	color: var(--ink);
+	background: var(--paper);
+	font: 15px/1.5 'DM Sans', 'Helvetica Neue', sans-serif;
+	-webkit-font-smoothing: antialiased;
+}

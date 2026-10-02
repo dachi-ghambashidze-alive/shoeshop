@@ -1,0 +1,127 @@
+<header class="site-header">
+	<div class="header-inner">
+		<button class="logo" type="button" aria-label="Soleworks home" (click)="go('home')">
+			<svg viewBox="0 0 120 64" aria-hidden="true">
+				<path d="M36 40C28 34 16 28 4 14 17 17 27 24 39 33ZM37 45C27 42 14 40 2 32 15 31 27 34 39 39ZM39 50C30 51 20 50 9 48 18 43 29 42 40 44Z" fill="#d4af37" />
+				<path d="M84 40c8-6 20-12 32-26-13 3-23 10-35 19Zm-1 5c10-3 23-5 35-13-13-1-25 2-37 7Zm-2 5c9 1 19 0 30-2-9-5-20-6-31-4Z" fill="#c29b2f" />
+				<path d="M34 53 36 42l13-6 9-11c5-4 10 0 14 4 8 8 21 8 32 12 4 2 5 4 4 6Z" fill="#fff" />
+				<path d="M33 53h76v5q0 3-4 3H37q-4 0-4-3Z" fill="#d4af37" />
+			</svg>
+			<span>Soleworks</span>
+		</button>
+		<nav aria-label="Main navigation">
+			<button type="button" [class.active]="view === 'shop'" (click)="go('shop')">Shop</button>
+			<button *ngIf="user?.role === 'admin'" type="button" [class.active]="view === 'admin'" (click)="go('admin')">Admin</button>
+			<button *ngIf="user" type="button" [class.active]="view === 'account'" (click)="go('account')">{{ user.name }}</button>
+			<button *ngIf="!user" type="button" [class.active]="view === 'login'" (click)="go('login')">Log in</button>
+			<button type="button" [class.active]="view === 'cart'" (click)="go('cart')">Bag ({{ cartCount }})</button>
+		</nav>
+	</div>
+</header>
+
+<main class="page-content" [ngSwitch]="view">
+	<section *ngSwitchCase="'home'">
+		<section class="hero" [class.solo]="!featuredProduct">
+			<div class="hero-copy">
+				<p class="eyebrow">Autumn 2026</p>
+				<h1>Shoes for the work, the weekend and the occasion.</h1>
+				<p class="muted hero-subtitle">Thirty pairs across six ranges. Pick a size, check out in a minute.</p>
+				<button class="button primary" type="button" (click)="go('shop')">Shop all</button>
+			</div>
+			<div class="hero-photo" *ngIf="featuredProduct as featured"><img [src]="featured.img" [alt]="featured.name" /></div>
+		</section>
+		<section class="home-section">
+			<h2>Shop by range</h2>
+			<div class="category-grid">
+				<button *ngFor="let category of categories" type="button" (click)="openCategory(category)">
+					<span>{{ category }}</span><small>{{ categoryCount(category) }} styles <span aria-hidden="true">→</span></small>
+				</button>
+			</div>
+		</section>
+		<section class="home-section">
+			<h2>New in</h2>
+			<div class="product-grid">
+				<button class="product-card" *ngFor="let product of data.products; let i = index" [hidden]="i % 6 !== 0" type="button" (click)="openProduct(product)">
+					<span class="product-image"><img *ngIf="product.img; else homePlaceholder" [src]="product.img" [alt]="product.name" loading="lazy" />
+						<ng-template #homePlaceholder><span class="placeholder"><small>{{ product.cat }}</small><strong>{{ product.name }}</strong></span></ng-template>
+					</span><span class="product-name"><span>{{ product.name }}</span><span>{{ money(product.price) }}</span></span><span class="product-category">{{ product.cat }}</span>
+				</button>
+			</div>
+		</section>
+	</section>
+
+	<section *ngSwitchCase="'shop'" class="shop-view">
+		<h1 class="page-title">Shop</h1>
+		<div class="shop-layout">
+			<aside class="filters"><h2>Search</h2><input type="search" placeholder="Name" aria-label="Search shoes" [(ngModel)]="query" />
+				<h2>Price</h2><div class="field-row"><input type="number" min="0" placeholder="Min" aria-label="Minimum price" [(ngModel)]="minPrice" /><input type="number" min="0" placeholder="Max" aria-label="Maximum price" [(ngModel)]="maxPrice" /></div>
+				<h2>Type</h2><label class="filter-option" *ngFor="let category of categories"><input type="checkbox" [checked]="selectedCategories.has(category)" (change)="toggleCategory(category, $any($event.target).checked)" /><span>{{ category }}</span></label>
+				<button class="text-button clear-filters" type="button" (click)="resetFilters()">Clear filters</button>
+			</aside>
+			<section class="results" aria-label="Products">
+				<div class="results-toolbar"><span class="muted">{{ filteredProducts.length }} styles</span><select aria-label="Sort products" [(ngModel)]="sort"><option value="feat">Featured</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option></select></div>
+				<div class="product-grid"><button class="product-card" *ngFor="let product of filteredProducts" type="button" (click)="openProduct(product)">
+					<span class="product-image"><img *ngIf="product.img; else shopPlaceholder" [src]="product.img" [alt]="product.name" loading="lazy" />
+						<ng-template #shopPlaceholder><span class="placeholder"><small>{{ product.cat }}</small><strong>{{ product.name }}</strong></span></ng-template>
+					</span><span class="product-name"><span>{{ product.name }}</span><span>{{ money(product.price) }}</span></span><span class="product-category">{{ product.cat }}</span>
+				</button></div>
+				<p class="empty-state" *ngIf="filteredProducts.length === 0">No shoes match those filters.</p>
+			</section>
+		</div>
+	</section>
+
+	<section *ngSwitchCase="'cart'" class="standard-view"><h1 class="page-title">Your bag</h1>
+		<ng-container *ngIf="cartLines.length; else emptyCart"><div class="two-column"><div class="table-scroll"><table><thead><tr><th></th><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead><tbody><tr *ngFor="let line of cartLines">
+			<td><span class="thumbnail"><img *ngIf="line.product.img; else cartPlaceholder" [src]="line.product.img" [alt]="line.product.name" /><ng-template #cartPlaceholder><span>{{ line.product.name }}</span></ng-template></span></td>
+			<td>{{ line.product.name }}<br /><span class="muted">Size {{ line.size }} · {{ money(line.product.price) }}</span></td>
+			<td><span class="quantity"><button type="button" aria-label="Decrease quantity" (click)="changeQuantity(line.idx, -1)">−</button><span>{{ line.qty }}</span><button type="button" aria-label="Increase quantity" (click)="changeQuantity(line.idx, 1)">+</button></span></td>
+			<td>{{ money(line.product.price * line.qty) }}</td><td><button class="text-button" type="button" (click)="removeFromCart(line.idx)">Remove</button></td>
+		</tr></tbody></table></div><aside class="summary-box"><div class="summary-total"><span>Subtotal</span><strong>{{ money(cartTotal) }}</strong></div><p class="muted">Shipping is calculated at the next step.</p><button class="button primary full-width" type="button" (click)="go(user ? 'checkout' : 'login', 'checkout')">Checkout</button></aside></div></ng-container>
+		<ng-template #emptyCart><p class="empty-state">Your bag is empty.</p><button class="button primary" type="button" (click)="go('shop')">Continue shopping</button></ng-template>
+	</section>
+
+	<section *ngSwitchCase="'checkout'" class="standard-view"><ng-container *ngIf="user && cartLines.length; else checkoutUnavailable">
+		<h1 class="page-title">Shipping</h1><div class="two-column"><form class="store-form" (ngSubmit)="placeOrder()">
+			<label>Name<input type="text" name="shippingName" required autocomplete="name" [(ngModel)]="shipping.name" /></label><label>Phone<input type="tel" name="shippingPhone" required autocomplete="tel" [(ngModel)]="shipping.phone" /></label>
+			<label>Location / address<input type="text" name="shippingLocation" required [(ngModel)]="shipping.loc" /></label><label>ZIP code<input type="text" name="shippingZip" required pattern="[A-Za-z0-9 -]{3,10}" [(ngModel)]="shipping.zip" /></label>
+			<p class="error-message" *ngIf="formError">{{ formError }}</p><button class="button primary" type="submit">Place order · {{ money(cartTotal) }}</button>
+		</form><aside class="summary-box"><h2>Order</h2><div class="summary-line" *ngFor="let line of cartLines"><span>{{ line.qty }} × {{ line.product.name }} <span class="muted">({{ line.size }})</span></span><span>{{ money(line.product.price * line.qty) }}</span></div></aside></div>
+	</ng-container><ng-template #checkoutUnavailable><div class="store-form"><h2>Log in to check out</h2><p class="muted">Your bag is ready when you are.</p><button class="button primary" type="button" (click)="go('login', 'checkout')">Log in</button></div></ng-template></section>
+
+	<section *ngSwitchCase="'done'" class="store-form completion"><h1 class="page-title">Order placed</h1><p class="muted">Thanks. Your order and shipping details have been saved.</p><button class="button primary" type="button" (click)="go('shop')">Keep shopping</button></section>
+
+	<section *ngSwitchCase="'login'" class="store-form"><form (ngSubmit)="login()"><h1 class="page-title">Log in</h1><p class="muted">Enter your name and phone number. New here? We'll create your account.</p>
+		<label>Name<input type="text" name="loginName" required autocomplete="name" [(ngModel)]="loginName" /></label><label>Phone<input type="tel" name="loginPhone" required autocomplete="tel" [(ngModel)]="loginPhone" /></label>
+		<p class="error-message" *ngIf="formError">{{ formError }}</p><button class="button primary" type="submit">Continue</button><p class="muted admin-hint">Admin demo: name <strong>admin</strong>, phone <strong>0000</strong>.</p>
+	</form></section>
+
+	<section *ngSwitchCase="'account'" class="standard-view"><ng-container *ngIf="user; else accountLogin"><h1 class="page-title">Hello, {{ user.name }}</h1><p class="muted">{{ user.phone }}<span *ngIf="user.loc"> · {{ user.loc }} {{ user.zip }}</span></p>
+		<button class="button outline small" type="button" (click)="logout()">Log out</button><h2 class="section-title">Orders</h2>
+		<div class="table-scroll" *ngIf="userOrders.length; else noOrders"><table><thead><tr><th>#</th><th>Items</th><th>Total</th><th>Ship to</th></tr></thead><tbody><tr *ngFor="let order of userOrders"><td>{{ order.id }}</td><td><span *ngFor="let item of order.items; let last = last">{{ item.qty }}× {{ item.name }} ({{ item.size }})<br *ngIf="!last" /></span></td><td>{{ money(order.total) }}</td><td>{{ order.loc }}, {{ order.zip }}</td></tr></tbody></table></div>
+		<ng-template #noOrders><p class="empty-state">No orders yet.</p></ng-template></ng-container><ng-template #accountLogin><button class="button primary" type="button" (click)="go('login')">Log in</button></ng-template></section>
+
+	<section *ngSwitchCase="'admin'" class="standard-view"><ng-container *ngIf="user?.role === 'admin'; else adminLogin"><h1 class="page-title admin-title">Admin</h1>
+		<div class="tabs"><button *ngFor="let tab of ['products', 'orders', 'users']" type="button" [class.active]="adminTab === tab" (click)="adminTab = $any(tab)">{{ tab | titlecase }} ({{ adminTabCount($any(tab)) }})</button></div>
+		<section *ngIf="adminTab === 'products'"><form class="add-product-form" (ngSubmit)="addProduct()"><input type="text" name="productName" placeholder="Name" required [(ngModel)]="productDraft.name" /><input type="number" name="productPrice" placeholder="Price" min="1" step="0.01" required [(ngModel)]="productDraft.price" />
+			<select name="productCategory" [(ngModel)]="productDraft.cat"><option *ngFor="let category of categories" [ngValue]="category">{{ category }}</option></select><input type="color" name="productColor" aria-label="Colour" [(ngModel)]="productDraft.color" /><button class="button primary" type="submit">Add shoe</button></form>
+			<p class="bulk-row"><button class="button outline small" type="button" (click)="openBulkPicker()">Bulk import photos</button><span class="muted">Select multiple images. Files named after a shoe are matched automatically.</span></p>
+			<div class="table-scroll"><table><thead><tr><th></th><th>Name</th><th>Type</th><th>Price</th><th></th></tr></thead><tbody><tr *ngFor="let product of data.products"><td><span class="thumbnail admin-thumbnail"><img *ngIf="product.img; else adminPlaceholder" [src]="product.img" [alt]="product.name" /><ng-template #adminPlaceholder><span>{{ product.name }}</span></ng-template></span></td>
+				<td>{{ product.name }}</td><td>{{ product.cat }}</td><td>{{ money(product.price) }}</td><td class="admin-actions"><button class="text-button" type="button" (click)="requestProductPhoto(product.id)">Photo</button><button class="text-button" type="button" (click)="setProductPhotoUrl(product)">URL</button><button class="text-button danger" type="button" (click)="deleteProduct(product)">Delete</button></td>
+			</tr></tbody></table></div></section>
+		<div class="table-scroll" *ngIf="adminTab === 'orders'"><table><thead><tr><th>#</th><th>Items</th><th>Total</th><th>Ship to</th></tr></thead><tbody><tr *ngFor="let order of data.orders"><td>{{ order.id }}</td><td><span *ngFor="let item of order.items">{{ item.qty }}× {{ item.name }} ({{ item.size }})<br /></span></td><td>{{ money(order.total) }}</td><td>{{ order.loc }}, {{ order.zip }}</td></tr></tbody></table><p class="empty-state" *ngIf="!data.orders.length">No orders yet.</p></div>
+		<div class="table-scroll" *ngIf="adminTab === 'users'"><table><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Role</th><th>Address</th></tr></thead><tbody><tr *ngFor="let account of data.users"><td>{{ account.id }}</td><td>{{ account.name }}</td><td>{{ account.phone }}</td><td>{{ account.role }}</td><td>{{ account.loc }} {{ account.zip }}</td></tr></tbody></table></div>
+	</ng-container><ng-template #adminLogin><button class="button primary" type="button" (click)="go('login')">Log in</button></ng-template></section>
+</main>
+
+<footer class="site-footer"><span>© Soleworks. Demo store — data is saved in this browser only. Product images: <a href="https://unsplash.com/license" target="_blank" rel="noreferrer">Unsplash License</a>.</span><span>Shipping &amp; returns · Size guide · Contact</span></footer>
+<dialog #productDialog class="product-dialog" aria-label="Product details" (click)="closeOnBackdrop($event)"><button class="dialog-close" type="button" aria-label="Close" (click)="productDialog.close()">×</button>
+	<div class="dialog-layout" *ngIf="selectedProduct as product"><div class="dialog-image"><img *ngIf="product.img; else dialogPlaceholder" [src]="product.img" [alt]="product.name" /><ng-template #dialogPlaceholder><span class="placeholder"><small>{{ product.cat }}</small><strong>{{ product.name }}</strong></span></ng-template></div>
+		<div class="dialog-info"><span class="muted">{{ product.cat }}</span><h2>{{ product.name }}</h2><strong class="dialog-price">{{ money(product.price) }}</strong><span class="field-label">Select size (EU)</span>
+			<div class="size-grid"><button *ngFor="let size of sizes" type="button" [class.active]="selectedSize === size.toString()" (click)="selectedSize = size.toString()">{{ size }}</button></div>
+			<p class="error-message" *ngIf="formError">{{ formError }}</p><button class="button primary full-width" type="button" (click)="addToCart(product)">Add to bag</button><p class="muted dialog-note">Free returns within 30 days. Ships in 2–3 working days.</p>
+		</div>
+	</div>
+</dialog>
+<input #photoInput class="visually-hidden" type="file" accept="image/*" (change)="uploadProductPhoto($event)" />
+<input #bulkInput class="visually-hidden" type="file" accept="image/*" multiple (change)="bulkUpload($event)" />
+<div class="toast" [class.visible]="!!toastMessage" role="status">{{ toastMessage }}</div>

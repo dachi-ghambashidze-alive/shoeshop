@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Soleworks — Footwear</title>
+<meta name="description" content="Soleworks footwear: runners, work boots, classics, leather and dress shoes.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--ink:#111;--mut:#6b6b6b;--line:#e6e3dc;--card:#f5f3ee;--w:#fff;--gold:#b8933f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{max-width:1360px;margin:auto;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:14px;text-decoration:none;background:none;border:0;cursor:pointer}
+nav{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+nav button{background:none;border:0;padding:8px 12px;cursor:pointer;font-size:14px;color:var(--mut);transition:color .15s}
+nav button:hover,nav button.on{color:var(--ink)}
+main{max-width:1360px;margin:auto;padding:0 24px 80px;min-height:70vh;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.hero{display:grid;grid-template-columns:1fr 1.2fr;gap:0;margin:24px 0 48px;background:var(--card)}
+.hero div.t{padding:56px 48px;display:flex;flex-direction:column;justify-content:flex-end;gap:16px}
+h1{font-size:clamp(34px,5vw,60px);line-height:1;letter-spacing:-.03em;font-weight:600;margin:0}
+h2{font-size:22px;letter-spacing:-.02em;font-weight:600;margin:0 0 16px}
+.mut{color:var(--mut)}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 24px;background:var(--ink);color:var(--bg);border:1px solid var(--ink);cursor:pointer;font-size:13px;letter-spacing:.06em;text-transform:uppercase;transition:opacity .15s;text-decoration:none}
+.btn:hover{opacity:.85}.btn.o{background:none;color:var(--ink);border-color:var(--ink)}.btn.sm{height:34px;padding:0 12px;font-size:12px}
+.shop{display:grid;grid-template-columns:230px 1fr;gap:40px;align-items:start}
+aside{position:sticky;top:80px}
+aside h3,.lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:20px 0 8px;font-weight:500}
+aside label{display:flex;gap:8px;align-items:center;padding:4px 0;cursor:pointer}
+input[type=text],input[type=number],input[type=tel],select{width:100%;height:42px;padding:0 12px;background:var(--w);border:1px solid var(--line);border-radius:0}
+.row{display:flex;gap:8px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px}
+.top select{width:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:32px 20px}
+.card{cursor:pointer;background:none;border:0;padding:0;text-align:left}
+.img{background:var(--card);aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.img svg{width:86%;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.card:hover .img svg{transform:scale(1.05)}
+.card .n{display:flex;justify-content:space-between;margin-top:10px;font-weight:500}
+.card .c{color:var(--mut);font-size:13px}
+.empty{padding:60px 0;color:var(--mut)}
+dialog{border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:0;max-width:880px;width:calc(100% - 24px);border-radius:0}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.pd{display:grid;grid-template-columns:1fr 1fr}
+.pd .info{padding:32px;display:flex;flex-direction:column;gap:12px}
+.sizes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.sizes button{height:42px;background:none;border:1px solid var(--line);cursor:pointer}
+.sizes button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.x{position:absolute;right:12px;top:8px;background:none;border:0;font-size:26px;cursor:pointer;line-height:1}
+.err{color:#b3261e;font-size:13px;min-height:18px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:500}
+.thumb{width:84px;background:var(--card);display:block}.thumb svg{width:100%;display:block}
+.qty{display:inline-flex;border:1px solid var(--line)}
+.qty button{width:34px;height:34px;background:none;border:0;cursor:pointer}
+.qty span{width:34px;text-align:center;line-height:34px}
+.link{background:none;border:0;padding:0;color:var(--mut);text-decoration:underline;cursor:pointer}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:48px}
+.box{border:1px solid var(--line);padding:24px;background:var(--w)}
+.form{max-width:420px;display:grid;gap:12px;margin:40px 0}
+.tabs{display:flex;gap:4px;margin:24px 0;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;padding:10px 14px;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent}
+.tabs button.on{color:var(--ink);border-color:var(--ink)}
+.cats{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line);margin-bottom:56px}
+.cats button{background:none;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 14px;text-align:left;cursor:pointer;font-weight:500}
+.cats button:hover{background:var(--card)}
+footer{border-top:1px solid var(--line);padding:32px 24px;color:var(--mut);font-size:13px;max-width:1360px;margin:auto;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 18px;opacity:0;transition:.25s;pointer-events:none;z-index:50}
+#toast.s{opacity:1;transform:translate(-50%,0)}
+@media(max-width:820px){
+.hero,.pd,.two,.shop{grid-template-columns:1fr}.hero div.t{padding:28px 20px}
+aside{position:static;border-bottom:1px solid var(--line);padding-bottom:16px}
+.cats{grid-template-columns:repeat(2,1fr)}
+.bar{flex-wrap:wrap;height:auto;padding:10px 16px}main{padding:0 16px 60px}
+.grid{grid-template-columns:repeat(2,1fr);gap:24px 12px}
+.pd .info{padding:20px}.tbl-wrap{overflow-x:auto}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.logo{display:flex;align-items:center;gap:10px}.logo svg{width:60px;height:34px;display:block;background:#111;border-radius:10px}
+header{background:rgba(255,255,255,.88);backdrop-filter:blur(10px)}
+.hero{position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(180deg,#fff,#f5f3ee)}
+.hero .t,.hero .img{position:relative;z-index:1}.hero .lbl{color:var(--gold)}
+.bgshoe{position:absolute;right:-8%;top:-12%;width:75%;filter:blur(20px);opacity:.3}.bgshoe svg{width:100%}
+.img{border-radius:16px}.card:hover .img{box-shadow:0 10px 28px rgba(0,0,0,.09)}
+.img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s cubic-bezier(.2,.7,.2,1)}.card:hover .img img{transform:scale(1.05)}.thumb img{width:100%;display:block}
+input[type=text],input[type=number],input[type=tel],select{border-radius:12px;height:46px;transition:border-color .15s,box-shadow .15s;background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(184,147,63,.18)}
+aside{background:#fff;border:1px solid var(--line);border-radius:18px;padding:6px 20px 20px;box-shadow:0 8px 30px rgba(0,0,0,.05)}
+aside label{display:inline-flex;margin:0 6px 8px 0;padding:7px 14px;border:1px solid var(--line);border-radius:999px;font-size:13px;transition:.15s}
+aside label input{display:none}aside label:hover{border-color:var(--ink)}aside label:has(input:checked){background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn{border-radius:999px}.btn:hover{background:var(--gold);border-color:var(--gold);opacity:1}.btn.o:hover{color:#fff}
+.sizes button{border-radius:12px;transition:.15s}.sizes button:hover{border-color:var(--ink)}
+dialog{border-radius:20px;overflow:hidden}.box{border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.05)}.cats{border-radius:16px;overflow:hidden}.qty{border-radius:12px;overflow:hidden}
+.ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px;color:var(--mut)}
+.ph span{font-size:11px;letter-spacing:.1em;text-transform:uppercase}.ph b{font-weight:500;font-size:15px;color:var(--ink)}
+.thumb .ph{aspect-ratio:1;padding:4px}.thumb .ph span{display:none}.thumb .ph b{font-size:10px}
+.hero.solo{grid-template-columns:1fr}.hero.solo .t{padding:72px 48px;max-width:760px}
+</style></head><body>
+<header><div class="bar"><button class="logo" data-go="home" aria-label="Soleworks home"><svg viewBox="0 0 120 64" aria-hidden="true"><defs><g id="wg"><path d="M36 40C28 34 16 28 4 14C17 17 27 24 39 33Z" fill="#d4af37"/><path d="M37 45C27 42 14 40 2 32C15 31 27 34 39 39Z" fill="#c29b2f"/><path d="M39 50C30 51 20 50 9 48C18 43 29 42 40 44Z" fill="#b8933f"/></g></defs><use href="#wg"/><use href="#wg" transform="translate(120 0) scale(-1 1)"/><g transform="translate(30 31) scale(.3)"><path d="M12 74C12 58 32 54 52 46L70 30C80 24 92 30 100 38C116 52 150 52 178 62C188 66 190 72 188 76L12 76Z" fill="#fff"/><path d="M10 76H190V84Q190 90 182 90H18Q10 90 10 84Z" fill="#d4af37"/><path d="M74 33l9-5M83 37l9-5M92 41l9-5" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/></g></svg><span>Soleworks</span></button><nav id="nav" aria-label="Main"></nav></div></header>
+<main id="app"></main>
+<footer><span>© Soleworks. Demo store — data is saved in this browser only.</span><span>Shipping &amp; returns · Size guide · Contact</span></footer>
+<dialog id="dlg" aria-label="Product"></dialog><div id="toast" role="status"></div>
+<script>
+const CATS=['Sport / Runner','Heavy Duty','Classic','Leather','Everyday','Fancy'];
+const SEED={
+'Sport / Runner':[['Stride 01',120,'#d9531e'],['Tempo Run',135,'#1f4e79'],['Sprint Lite',110,'#222'],['Marathon V',150,'#5f7f2a'],['Track Pace',125,'#8a8a85']],
+'Heavy Duty':[['Site Boot',165,'#8a6a3b'],['Forge 6"',185,'#2b2b2b'],['Ridge Steel Toe',199,'#6b4a2a'],['Haul Pro',175,'#4a4a3f'],['Quarry',210,'#3a2d22']],
+'Classic':[['Court 70',85,'#e8e6df'],['Lowtop Canvas',65,'#1f3a5f'],['Hightop Original',75,'#a3262a'],['Plain Sneaker',80,'#f1f1ee'],['Varsity',90,'#2f5d46']],
+'Leather':[['Derby Tan',210,'#9a6b3c'],['Chelsea Black',240,'#161616'],['Loafer Brown',195,'#5a3a22'],['Brogue Oxblood',260,'#5b1f24'],['Chukka Suede',180,'#8c7556']],
+'Everyday':[['Walker One',70,'#7d8b8f'],['Slip-On Easy',60,'#b8ae9c'],['Commute',95,'#33415a'],['Daily Knit',88,'#c9c5bb'],['Trail Town',105,'#556b4d']],
+'Fancy':[['Oxford Patent',280,'#0e0e0e'],['Monk Strap',265,'#4a2b1b'],['Velvet Loafer',230,'#2d2a52'],['Heeled Pump',220,'#8b1e3f'],['Evening Slipper',200,'#1a1a1a']]};
+// ---- tiny database (localStorage, memory fallback) ----
+const KEY='soleworks_db_v1';let mem=null;
+function seed(){let id=1;const products=[];CATS.forEach(c=>SEED[c].forEach(([name,price,color])=>products.push({id:id++,name,price,color,cat:c})));
+return{products,users:[{id:1,name:'admin',phone:'0000',role:'admin'}],orders:[],cart:[],session:null,nextId:100}}
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return mem||seed()}
+let db=load();
+function save(){mem=db;try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+save();
+// ---- helpers ----
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>'$'+Number(n).toFixed(2).replace(/\.00$/,'');
+const me=()=>db.users.find(u=>u.id===db.session);
+function shade(h,a){const n=parseInt(h.slice(1),16);const f=x=>Math.max(0,Math.min(255,x+a));return'#'+[(n>>16)&255,(n>>8)&255,n&255].map(x=>f(x).toString(16).padStart(2,'0')).join('')}
+function shoe(p){return p.img?`<img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy" decoding="async">`:`<div class="ph"><span>${esc(p.cat)}</span><b>${esc(p.name)}</b></div>`}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('s');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('s'),1800)}
+let photoId=null;
+function readImg(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.75))};im.src=r.result};r.readAsDataURL(file)}
+// ---- state / routing ----
+let view='home',f={q:'',min:'',max:'',cats:new Set(),sort:'feat'},tab='products',selSize=null;
+function go(v){view=v;render();scrollTo(0,0)}
+function nav(){const u=me(),n=db.cart.reduce((a,i)=>a+i.qty,0);
+$('#nav').innerHTML=`<button data-go="shop" class="${view=='shop'?'on':''}">Shop</button>`+
+(u&&u.role==='admin'?`<button data-go="admin" class="${view=='admin'?'on':''}">Admin</button>`:'')+
+(u?`<button data-go="account" class="${view=='account'?'on':''}">${esc(u.name)}</button>`:`<button data-go="login" class="${view=='login'?'on':''}">Log in</button>`)+
+`<button data-go="cart" class="${view=='cart'?'on':''}">Bag (${n})</button>`}
+function render(){nav();$('#app').innerHTML=({home,shop,cart,checkout,login,account,admin,done})[view]();if(view==='shop')paintGrid()}
+// ---- views ----
+function home(){const hp=db.products.find(p=>p.img);return`
+<section class="hero${hp?'':' solo'}"><div class="t"><span class="lbl" style="margin:0">Autumn 2026</span><h1>Shoes for the work, the weekend and the occasion.</h1><p class="mut" style="margin:0;max-width:34ch">Thirty pairs across six ranges. Pick a size, check out in a minute.</p><div><button class="btn" data-go="shop">Shop all</button></div></div>
+${hp?`<div class="img" style="aspect-ratio:auto;min-height:340px;border-radius:0">${shoe(hp)}</div>`:''}</section>
+<h2>Shop by range</h2><div class="cats">${CATS.map(c=>`<button data-cat="${esc(c)}">${esc(c)}<br><span class="mut" style="font-weight:400">${db.products.filter(p=>p.cat===c).length} styles →</span></button>`).join('')}</div>
+<h2>New in</h2><div class="grid">${db.products.filter((_,i)=>i%6==0).map(card).join('')}</div>`}
+function card(p){return`<button class="card" data-p="${p.id}"><div class="img">${shoe(p)}</div><div class="n"><span>${esc(p.name)}</span><span>${money(p.price)}</span></div><div class="c">${esc(p.cat)}</div></button>`}
+function shop(){return`<div style="padding:28px 0 8px"><h1 style="font-size:36px">Shop</h1></div><div class="shop"><aside>
+<h3>Search</h3><input type="text" id="fq" placeholder="Name" value="${esc(f.q)}" aria-label="Search">
+<h3>Price</h3><div class="row"><input type="number" id="fmin" placeholder="Min" value="${f.min}" aria-label="Min price"><input type="number" id="fmax" placeholder="Max" value="${f.max}" aria-label="Max price"></div>
+<h3>Type</h3>${CATS.map(c=>`<label><input type="checkbox" data-fc="${esc(c)}" ${f.cats.has(c)?'checked':''}> ${esc(c)}</label>`).join('')}
+<p><button class="link" data-act="reset">Clear filters</button></p></aside>
+<section><div class="top"><span class="mut" id="cnt"></span><select id="fs" aria-label="Sort"><option value="feat">Featured</option><option value="lo" ${f.sort=='lo'?'selected':''}>Price: low to high</option><option value="hi" ${f.sort=='hi'?'selected':''}>Price: high to low</option></select></div><div class="grid" id="grid"></div></section></div>`}
+function paintGrid(){let l=db.products.filter(p=>(!f.cats.size||f.cats.has(p.cat))&&(!f.q||p.name.toLowerCase().includes(f.q.toLowerCase()))&&(f.min===''||p.price>=+f.min)&&(f.max===''||p.price<=+f.max));
+if(f.sort=='lo')l.sort((a,b)=>a.price-b.price);if(f.sort=='hi')l.sort((a,b)=>b.price-a.price);
+$('#cnt').textContent=l.length+' styles';$('#grid').innerHTML=l.length?l.map(card).join(''):'<p class="empty">No shoes match those filters.</p>'}
+function lines(){return db.cart.map((i,idx)=>({...i,idx,p:db.products.find(p=>p.id===i.pid)})).filter(l=>l.p)}
+function total(){return lines().reduce((a,l)=>a+l.p.price*l.qty,0)}
+function cart(){const L=lines();if(!L.length)return`<h1 style="font-size:36px;padding:28px 0">Your bag</h1><p class="empty">Your bag is empty.</p><button class="btn" data-go="shop">Continue shopping</button>`;
+return`<h1 style="font-size:36px;padding:28px 0">Your bag</h1><div class="two"><div class="tbl-wrap"><table><thead><tr><th></th><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead><tbody>${L.map(l=>`<tr><td><span class="thumb">${shoe(l.p)}</span></td><td>${esc(l.p.name)}<br><span class="mut">Size ${l.size} · ${money(l.p.price)}</span></td><td><span class="qty"><button data-q="${l.idx}" data-d="-1" aria-label="Less">−</button><span>${l.qty}</span><button data-q="${l.idx}" data-d="1" aria-label="More">+</button></span></td><td>${money(l.p.price*l.qty)}</td><td><button class="link" data-rm="${l.idx}">Remove</button></td></tr>`).join('')}</tbody></table></div>
+<div class="box"><div class="top"><span>Subtotal</span><strong>${money(total())}</strong></div><p class="mut">Shipping is calculated at the next step.</p><button class="btn" style="width:100%" data-go="checkout">Checkout</button></div></div>`}
+function checkout(){if(!me()){return`<div class="form"><h2>Log in to check out</h2><p class="mut">Just a name and phone number.</p><button class="btn" data-go="login" data-after="checkout">Log in</button></div>`}
+if(!lines().length)return cart();const u=me();
+return`<h1 style="font-size:36px;padding:28px 0">Shipping</h1><div class="two"><form class="form" style="margin:0" id="shipf"><div><div class="lbl">Name</div><input type="text" name="name" value="${esc(u.name)}" required></div><div><div class="lbl">Phone</div><input type="tel" name="phone" value="${esc(u.phone)}" required></div><div><div class="lbl">Location / address</div><input type="text" name="loc" value="${esc(u.loc||'')}" required></div><div><div class="lbl">ZIP code</div><input type="text" name="zip" value="${esc(u.zip||'')}" inputmode="numeric" pattern="[A-Za-z0-9 \\-]{3,10}" required></div><div class="err" id="err"></div><button class="btn">Place order · ${money(total())}</button></form>
+<div class="box"><h2>Order</h2>${lines().map(l=>`<div class="top"><span>${l.qty} × ${esc(l.p.name)} <span class="mut">(${l.size})</span></span><span>${money(l.p.price*l.qty)}</span></div>`).join('')}</div></div>`}
+function done(){return`<div class="form"><h1 style="font-size:36px">Order placed</h1><p class="mut">Thanks. Your order and shipping details have been saved.</p><button class="btn" data-go="shop">Keep shopping</button></div>`}
+let after='account';
+function login(){return`<form class="form" id="lf"><h1 style="font-size:36px">Log in</h1><p class="mut">Enter your name and phone number. New here? We'll create your account.</p><div><div class="lbl">Name</div><input type="text" name="name" required autocomplete="name"></div><div><div class="lbl">Phone</div><input type="tel" name="phone" required autocomplete="tel"></div><div class="err" id="err"></div><button class="btn">Continue</button><p class="mut" style="font-size:13px">Admin demo: name <b>admin</b>, phone <b>0000</b>.</p></form>`}
+function account(){const u=me();if(!u)return login();const o=db.orders.filter(o=>o.uid===u.id);
+return`<h1 style="font-size:36px;padding:28px 0">Hello, ${esc(u.name)}</h1><p class="mut">${esc(u.phone)}${u.loc?' · '+esc(u.loc)+' '+esc(u.zip):''}</p><p><button class="btn o sm" data-act="logout">Log out</button></p><h2 style="margin-top:32px">Orders</h2>${o.length?`<div class="tbl-wrap"><table><tr><th>#</th><th>Items</th><th>Total</th><th>Ship to</th></tr>${o.map(ordRow).join('')}</table></div>`:'<p class="empty">No orders yet.</p>'}`}
+const ordRow=o=>`<tr><td>${o.id}</td><td>${o.items.map(i=>`${i.qty}× ${esc(i.name)} (${i.size})`).join('<br>')}</td><td>${money(o.total)}</td><td>${esc(o.loc)}, ${esc(o.zip)}</td></tr>`;
+function admin(){const u=me();if(!u||u.role!=='admin')return login();
+const t={products:`<form class="row" id="addf" style="flex-wrap:wrap;margin-bottom:20px"><input type="text" name="name" placeholder="Name" required style="flex:2;min-width:140px"><input type="number" name="price" placeholder="Price" min="1" step="0.01" required style="flex:1;min-width:90px"><select name="cat" style="flex:1.2;min-width:140px">${CATS.map(c=>`<option>${c}</option>`).join('')}</select><input type="color" name="color" value="#444444" style="height:46px;width:56px" aria-label="Colour"><input type="file" name="img" accept="image/*" style="flex:2;min-width:170px;align-self:center" aria-label="Photo"><button class="btn">Add shoe</button></form><p class="mut" style="margin:0 0 16px"><button class="btn o sm" data-act="bulk">Bulk import photos</button> &nbsp;Select many images at once. A file named like the shoe (e.g. <i>stride-01.jpg</i>) goes to that shoe; others fill shoes without a photo.</p><div class="tbl-wrap"><table><tr><th></th><th>Name</th><th>Type</th><th>Price</th><th></th></tr>${db.products.map(p=>`<tr><td><span class="thumb" style="width:56px">${shoe(p)}</span></td><td>${esc(p.name)}</td><td>${esc(p.cat)}</td><td>${money(p.price)}</td><td style="white-space:nowrap"><button class="link" data-photo="${p.id}">Photo</button> · <button class="link" data-url="${p.id}">URL</button> · <button class="link" data-del="${p.id}">Delete</button></td></tr>`).join('')}</table></div>`,
+orders:db.orders.length?`<div class="tbl-wrap"><table><tr><th>#</th><th>Items</th><th>Total</th><th>Ship to</th></tr>${db.orders.map(ordRow).join('')}</table></div>`:'<p class="empty">No orders yet.</p>',
+users:`<div class="tbl-wrap"><table><tr><th>ID</th><th>Name</th><th>Phone</th><th>Role</th><th>Address</th></tr>${db.users.map(x=>`<tr><td>${x.id}</td><td>${esc(x.name)}</td><td>${esc(x.phone)}</td><td>${x.role||'user'}</td><td>${esc((x.loc||'')+' '+(x.zip||''))}</td></tr>`).join('')}</table></div>`}[tab];
+return`<input type="file" id="pf" accept="image/*" hidden><input type="file" id="bulk" accept="image/*" multiple hidden><h1 style="font-size:36px;padding:28px 0 0">Admin</h1><div class="tabs">${['products','orders','users'].map(x=>`<button data-tab="${x}" class="${tab==x?'on':''}">${x[0].toUpperCase()+x.slice(1)} (${db[x].length})</button>`).join('')}</div>${t}`}
+// ---- product dialog ----
+function openP(id){const p=db.products.find(x=>x.id==id);selSize=null;const d=$('#dlg');
+d.innerHTML=`<button class="x" data-act="close" aria-label="Close">×</button><div class="pd"><div class="img" style="aspect-ratio:auto;min-height:320px">${shoe(p)}</div><div class="info"><span class="mut">${esc(p.cat)}</span><h2 style="margin:0;font-size:28px">${esc(p.name)}</h2><div>${money(p.price)}</div><div class="lbl" style="margin:8px 0 0">Select size (EU)</div><div class="sizes">${[38,39,40,41,42,43,44,45].map(s=>`<button data-s="${s}">${s}</button>`).join('')}</div><div class="err" id="err"></div><button class="btn" data-add="${p.id}">Add to bag</button><p class="mut" style="font-size:13px">Free returns within 30 days. Ships in 2–3 working days.</p></div></div>`;
+d.showModal()}
+// ---- events ----
+document.addEventListener('click',e=>{const t=e.target.closest('button,[data-p]');if(!t)return;const D=t.dataset;
+if(D.go){after=D.after||'account';$('#dlg').open&&$('#dlg').close();go(D.go)}
+else if(D.cat){f.cats=new Set([D.cat]);go('shop')}
+else if(D.p)openP(D.p)
+else if(D.s){selSize=D.s;document.querySelectorAll('.sizes button').forEach(b=>b.classList.toggle('on',b===t))}
+else if(D.add){if(!selSize){$('#err').textContent='Please choose a size.';return}
+const x=db.cart.find(i=>i.pid==D.add&&i.size==selSize);x?x.qty++:db.cart.push({pid:+D.add,size:selSize,qty:1});save();$('#dlg').close();nav();toast('Added to bag')}
+else if(D.q){const i=db.cart[D.q];i.qty+=+D.d;if(i.qty<1)db.cart.splice(D.q,1);save();render()}
+else if(D.rm){db.cart.splice(D.rm,1);save();render()}
+else if(D.photo){photoId=D.photo;$('#pf').click()}
+else if(D.url){const p=db.products.find(x=>x.id==D.url),v=prompt('Image URL (empty = remove photo)',p.img&&p.img.startsWith('http')?p.img:'');if(v!==null){p.img=v.trim()||undefined;save();render()}}
+else if(D.del){if(confirm('Delete this shoe?')){db.products=db.products.filter(p=>p.id!=D.del);db.cart=db.cart.filter(i=>i.pid!=D.del);save();render()}}
+else if(D.tab){tab=D.tab;render()}
+else if(D.act==='bulk')$('#bulk').click()
+else if(D.act==='close')$('#dlg').close()
+else if(D.act==='reset'){f={q:'',min:'',max:'',cats:new Set(),sort:'feat'};render()}
+else if(D.act==='logout'){db.session=null;save();go('home')}});
+$('#dlg').addEventListener('click',e=>{if(e.target.id==='dlg')e.target.close()});
+document.addEventListener('input',e=>{const t=e.target;if(view!=='shop')return;
+if(t.id==='fq')f.q=t.value;else if(t.id==='fmin')f.min=t.value;else if(t.id==='fmax')f.max=t.value;else return;paintGrid()});
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='bulk'){const fs=[...t.files],norm=x=>x.toLowerCase().replace(/\.[a-z]+$/,'').replace(/[^a-z0-9]/g,'');let n=0;
+const next=()=>{const f=fs.shift();if(!f){save();render();toast(n+' photos added');return}const k=norm(f.name);const p=db.products.find(p=>k.includes(norm(p.name)))||db.products.find(p=>!p.img);if(!p)return next();readImg(f,u=>{p.img=u;n++;next()})};next();return}
+if(t.id==='pf'&&t.files[0]){readImg(t.files[0],u=>{const p=db.products.find(x=>x.id==photoId);if(p){p.img=u;save();render();toast('Photo saved')}});return}if(t.dataset.fc){t.checked?f.cats.add(t.dataset.fc):f.cats.delete(t.dataset.fc);paintGrid()}else if(t.id==='fs'){f.sort=t.value;paintGrid()}});
+document.addEventListener('submit',e=>{e.preventDefault();const F=Object.fromEntries(new FormData(e.target)),id=e.target.id;
+if(id==='lf'){const name=F.name.trim(),phone=F.phone.trim().replace(/[\s-]/g,'');if(!name||phone.length<4){$('#err').textContent='Enter a name and a valid phone number.';return}
+let u=db.users.find(x=>x.name.toLowerCase()===name.toLowerCase());
+if(u&&u.phone!==phone){$('#err').textContent='That name exists with a different phone number.';return}
+if(!u){u={id:db.nextId++,name,phone,role:'user'};db.users.push(u)}db.session=u.id;save();go(u.role==='admin'?'admin':(after==='checkout'?'checkout':'account'));after='account'}
+else if(id==='shipf'){const u=me();if(!/^[A-Za-z0-9 \-]{3,10}$/.test(F.zip.trim())){$('#err').textContent='Enter a valid ZIP code.';return}
+Object.assign(u,{loc:F.loc.trim(),zip:F.zip.trim(),phone:F.phone.trim()});
+db.orders.push({id:db.nextId++,uid:u.id,name:F.name,phone:F.phone,loc:u.loc,zip:u.zip,total:total(),date:new Date().toISOString(),items:lines().map(l=>({pid:l.pid,name:l.p.name,size:l.size,qty:l.qty,price:l.p.price}))});
+db.cart=[];save();go('done')}
+else if(id==='addf'){const add=img=>{db.products.push({id:db.nextId++,name:F.name.trim(),price:+F.price,cat:F.cat,color:F.color,img});save();render()};F.img&&F.img.size?readImg(F.img,add):add()}});
+render();
+</script></body></html>
