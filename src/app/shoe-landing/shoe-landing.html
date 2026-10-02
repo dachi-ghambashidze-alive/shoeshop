@@ -1,3 +1,17 @@
+<!-- Announcement Bar -->
+<aside class="announcement-bar" aria-label="Store announcement">
+	<div class="announcement-content">
+		<span>🍂 <strong>Autumn 2026 Collection</strong> · Atelier Footwear</span>
+		<span class="announcement-sep">•</span>
+		<span>Use code <mark class="promo-badge">COOKED20</mark> for 20% off all orders</span>
+		<span class="announcement-sep">•</span>
+		<span>Free express courier on orders over $150</span>
+		<span class="announcement-sep">•</span>
+		<span>30-day risk-free home trial</span>
+	</div>
+</aside>
+
+<!-- Header -->
 <header class="site-header">
 	<div class="header-inner">
 		<button class="logo" type="button" aria-label="Soleworks home" (click)="go('home')">
@@ -7,121 +21,1220 @@
 				<path d="M34 53 36 42l13-6 9-11c5-4 10 0 14 4 8 8 21 8 32 12 4 2 5 4 4 6Z" fill="#fff" />
 				<path d="M33 53h76v5q0 3-4 3H37q-4 0-4-3Z" fill="#d4af37" />
 			</svg>
-			<span>Soleworks</span>
+			<div class="logo-text">
+				<span class="logo-title">Soleworks</span>
+				<span class="logo-sub">Atelier Footwear</span>
+			</div>
 		</button>
-		<nav aria-label="Main navigation">
-			<button type="button" [class.active]="view === 'shop'" (click)="go('shop')">Shop</button>
+
+		<nav class="main-nav" aria-label="Main navigation">
+			<button type="button" [class.active]="view === 'home'" (click)="go('home')">Home</button>
+			<button type="button" [class.active]="view === 'shop'" (click)="go('shop')">Shop All</button>
+			<button type="button" [class.active]="view === 'wishlist'" (click)="go('wishlist')" aria-label="View wishlist">
+				Wishlist <span class="nav-badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
+			</button>
 			<button *ngIf="user?.role === 'admin'" type="button" [class.active]="view === 'admin'" (click)="go('admin')">Admin</button>
 			<button *ngIf="user" type="button" [class.active]="view === 'account'" (click)="go('account')">{{ user.name }}</button>
 			<button *ngIf="!user" type="button" [class.active]="view === 'login'" (click)="go('login')">Log in</button>
-			<button type="button" [class.active]="view === 'cart'" (click)="go('cart')">Bag ({{ cartCount }})</button>
+			<button class="bag-nav-button" type="button" [class.active]="view === 'cart'" (click)="go('cart')">
+				<span>Bag</span>
+				<span class="bag-counter">{{ cartCount }}</span>
+			</button>
 		</nav>
 	</div>
 </header>
 
+<!-- Main Page Content -->
 <main class="page-content" [ngSwitch]="view">
-	<section *ngSwitchCase="'home'">
-		<section class="hero" [class.solo]="!featuredProduct">
-			<div class="hero-copy">
-				<p class="eyebrow">Autumn 2026</p>
-				<h1>Shoes for the work, the weekend and the occasion.</h1>
-				<p class="muted hero-subtitle">Thirty pairs across six ranges. Pick a size, check out in a minute.</p>
-				<button class="button primary" type="button" (click)="go('shop')">Shop all</button>
+
+	<!-- HOME VIEW -->
+	<section *ngSwitchCase="'home'" class="home-view">
+		<!-- Hero Section -->
+		<section class="hero-showcase">
+			<div class="hero-left">
+				<div class="hero-badge-pill">
+					<span class="pulse-dot"></span>
+					<span>Autumn 2026 Collection · Handcrafted in Guimarães</span>
+				</div>
+				<h1 class="hero-headline">Shoes for the work, the weekend and the occasion.</h1>
+				<p class="hero-description">
+					Thirty-six precision silhouettes spanning race day, construction sites, city streets, and black-tie galas.
+					Choose your custom width, arch support, and leather patina.
+				</p>
+				<div class="hero-actions">
+					<button class="button primary" type="button" (click)="go('shop')">Explore All 36 Styles</button>
+					<button class="button outline" type="button" (click)="openCategory('Sport / Runner')">Running Lab</button>
+					<button class="button outline" type="button" (click)="openCategory('Leather')">Artisan Leather</button>
+				</div>
+
+				<div class="hero-stats">
+					<div class="stat-item">
+						<strong>4.9 ★</strong>
+						<small>2,800+ Verified Reviews</small>
+					</div>
+					<div class="stat-sep"></div>
+					<div class="stat-item">
+						<strong>3 Widths</strong>
+						<small>Standard, Wide, Extra-Wide</small>
+					</div>
+					<div class="stat-sep"></div>
+					<div class="stat-item">
+						<strong>Vibram®</strong>
+						<small>Dual Compound Traction</small>
+					</div>
+				</div>
 			</div>
-			<div class="hero-photo" *ngIf="featuredProduct as featured"><img [src]="featured.img" [alt]="featured.name" /></div>
+
+			<div class="hero-right">
+				<div class="hero-card" *ngIf="featuredProduct as feat">
+					<div class="hero-card-badge">{{ feat.badge || 'Featured Silhouette' }}</div>
+					<div class="hero-card-img-wrap">
+						<img [src]="feat.img" [alt]="feat.name" loading="eager" />
+					</div>
+					<div class="hero-card-meta">
+						<div class="hero-card-info">
+							<span class="hero-card-cat">{{ feat.cat }}</span>
+							<h3 class="hero-card-title">{{ feat.name }}</h3>
+							<span class="hero-card-rating">★★★★★ <span>({{ feat.reviewCount }} reviews)</span></span>
+						</div>
+						<div class="hero-card-buy">
+							<strong class="hero-card-price">{{ money(feat.price) }}</strong>
+							<button class="button primary small" type="button" (click)="openProduct(feat)">Configure</button>
+						</div>
+					</div>
+
+					<!-- Hero Shoe Switcher Tabs -->
+					<div class="hero-switcher">
+						<span class="switcher-label">Flagship Silhouettes:</span>
+						<div class="switcher-buttons">
+							<button *ngFor="let p of heroProducts; let idx = index"
+								type="button"
+								[class.active]="heroShoeIndex === idx"
+								(click)="heroShoeIndex = idx">
+								{{ p.name }}
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</section>
+
+		<!-- Interactive Shoe Finder Quiz Banner -->
+		<section class="shoe-finder-banner">
+			<div class="finder-header">
+				<span class="finder-icon">⚡</span>
+				<div>
+					<h2>Atelier Shoe Finder</h2>
+					<p class="muted">Find your exact match in seconds based on your activity, size, and budget.</p>
+				</div>
+			</div>
+			<div class="finder-inputs">
+				<div class="finder-col">
+					<label for="finderCat">Activity / Category</label>
+					<select id="finderCat" [(ngModel)]="finderCat">
+						<option value="">All Collections</option>
+						<option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+					</select>
+				</div>
+				<div class="finder-col">
+					<label for="finderSize">Shoe Size (EU)</label>
+					<select id="finderSize" [(ngModel)]="finderSize">
+						<option value="">Any Size</option>
+						<option *ngFor="let s of sizes" [value]="s">{{ s }} ({{ getSizeLabel(s) }})</option>
+					</select>
+				</div>
+				<div class="finder-col">
+					<label for="finderBudget">Max Budget</label>
+					<select id="finderBudget" [(ngModel)]="finderBudget">
+						<option value="">Any Price</option>
+						<option value="100">Under $100</option>
+						<option value="150">Under $150</option>
+						<option value="200">Under $200</option>
+						<option value="250">Under $250</option>
+					</select>
+				</div>
+				<div class="finder-btn-col">
+					<button class="button primary" type="button" (click)="runShoeFinder()">Filter Matches</button>
+				</div>
+			</div>
+		</section>
+
+		<!-- Shop by Range -->
 		<section class="home-section">
-			<h2>Shop by range</h2>
+			<div class="section-heading-row">
+				<div>
+					<h2 class="section-title">Shop by Collection</h2>
+					<p class="muted">Precision-crafted footwear engineered for your specific terrain and lifestyle.</p>
+				</div>
+				<button class="button outline small" type="button" (click)="go('shop')">View All Collections →</button>
+			</div>
+
 			<div class="category-grid">
-				<button *ngFor="let category of categories" type="button" (click)="openCategory(category)">
-					<span>{{ category }}</span><small>{{ categoryCount(category) }} styles <span aria-hidden="true">→</span></small>
+				<button *ngFor="let category of categories" type="button" class="category-card" (click)="openCategory(category)">
+					<div class="category-meta">
+						<span class="category-name">{{ category }}</span>
+						<span class="category-count">{{ categoryCount(category) }} premium styles</span>
+					</div>
+					<span class="category-arrow" aria-hidden="true">→</span>
 				</button>
 			</div>
 		</section>
+
+		<!-- Trending & New In Grid -->
 		<section class="home-section">
-			<h2>New in</h2>
+			<div class="section-heading-row">
+				<div>
+					<span class="eyebrow">Autumn Highlights</span>
+					<h2 class="section-title">New Arrivals &amp; Atelier Icons</h2>
+				</div>
+				<div class="category-pills">
+					<button type="button" class="pill on" (click)="go('shop')">Featured</button>
+					<button type="button" class="pill" (click)="openCategory('Sport / Runner')">Runners</button>
+					<button type="button" class="pill" (click)="openCategory('Leather')">Leather</button>
+					<button type="button" class="pill" (click)="openCategory('Heavy Duty')">Boots</button>
+				</div>
+			</div>
+
 			<div class="product-grid">
-				<button class="product-card" *ngFor="let product of data.products; let i = index" [hidden]="i % 6 !== 0" type="button" (click)="openProduct(product)">
-					<span class="product-image"><img *ngIf="product.img; else homePlaceholder" [src]="product.img" [alt]="product.name" loading="lazy" />
-						<ng-template #homePlaceholder><span class="placeholder"><small>{{ product.cat }}</small><strong>{{ product.name }}</strong></span></ng-template>
-					</span><span class="product-name"><span>{{ product.name }}</span><span>{{ money(product.price) }}</span></span><span class="product-category">{{ product.cat }}</span>
-				</button>
+				<div class="product-card" *ngFor="let product of data.products.slice(0, 8)" (click)="openProduct(product)">
+					<div class="card-badge" *ngIf="product.badge">{{ product.badge }}</div>
+					<button class="wishlist-btn"
+						type="button"
+						[class.active]="isWishlisted(product.id)"
+						(click)="toggleWishlist(product.id, $event)"
+						aria-label="Toggle wishlist">
+						♥
+					</button>
+
+					<div class="product-image">
+						<img [src]="product.img" [alt]="product.name" loading="lazy" />
+					</div>
+
+					<div class="product-body">
+						<div class="product-rating-row">
+							<span class="stars">★★★★★</span>
+							<span class="rating-num">{{ product.rating }}</span>
+							<span class="reviews-count">({{ product.reviewCount }})</span>
+						</div>
+
+						<div class="product-name-row">
+							<h3 class="product-title">{{ product.name }}</h3>
+							<div class="price-container">
+								<span class="original-price" *ngIf="product.originalPrice">{{ money(product.originalPrice) }}</span>
+								<strong class="current-price">{{ money(product.price) }}</strong>
+							</div>
+						</div>
+
+						<p class="product-category-label">{{ product.cat }}</p>
+
+						<!-- Colorway preview pills -->
+						<div class="card-colorways" *ngIf="product.colorways?.length">
+							<span class="cw-dot"
+								*ngFor="let cw of product.colorways"
+								[style.background]="cw.hex"
+								[title]="cw.name">
+							</span>
+							<span class="cw-count">{{ product.colorways.length }} colors</span>
+						</div>
+
+						<div class="card-action-bar">
+							<button class="button primary small full-width" type="button" (click)="quickAdd(product, $event)">
+								Select Size &amp; Options
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Social Proof & Testimonials -->
+		<section class="home-section testimonials-section">
+			<div class="testimonials-header">
+				<span class="eyebrow">Wearer Reviews</span>
+				<h2 class="section-title">Tested by Marathoners, Cobblers &amp; Architects</h2>
+			</div>
+
+			<div class="testimonials-grid">
+				<div class="testimonial-card">
+					<div class="test-stars">★★★★★</div>
+					<blockquote class="test-quote">
+						"The Stride 01 has replaced every other runner in my rotation. 400 miles in and the cushioning still feels as snappy as day one."
+					</blockquote>
+					<div class="test-author">
+						<strong>Marcus Vance</strong>
+						<small>Distance Runner · Boston, MA</small>
+					</div>
+				</div>
+
+				<div class="testimonial-card">
+					<div class="test-stars">★★★★★</div>
+					<blockquote class="test-quote">
+						"The Chelsea Black is bespoke-tier craftsmanship without the 6-month wait. Goodyear welted with breathtaking calfskin patina."
+					</blockquote>
+					<div class="test-author">
+						<strong>Julian Moreau</strong>
+						<small>Creative Director · Paris, France</small>
+					</div>
+				</div>
+
+				<div class="testimonial-card">
+					<div class="test-stars">★★★★★</div>
+					<blockquote class="test-quote">
+						"Finding genuinely stylish work boots in Wide EE was basically impossible until Soleworks. The Site Boot 8 is indestructible."
+					</blockquote>
+					<div class="test-author">
+						<strong>Elena Rostova</strong>
+						<small>Architect &amp; Builder · Chicago, IL</small>
+					</div>
+				</div>
 			</div>
 		</section>
 	</section>
 
+	<!-- SHOP VIEW -->
 	<section *ngSwitchCase="'shop'" class="shop-view">
-		<h1 class="page-title">Shop</h1>
+		<div class="shop-header">
+			<div>
+				<h1 class="page-title">Catalog</h1>
+				<p class="muted">Browse all {{ data.products.length }} masterfully crafted models with full customization.</p>
+			</div>
+			<div class="size-system-switch">
+				<span class="switch-label">Size Scale:</span>
+				<div class="segmented-control">
+					<button type="button" [class.on]="sizeSystem === 'EU'" (click)="sizeSystem = 'EU'">EU</button>
+					<button type="button" [class.on]="sizeSystem === 'US'" (click)="sizeSystem = 'US'">US</button>
+					<button type="button" [class.on]="sizeSystem === 'UK'" (click)="sizeSystem = 'UK'">UK</button>
+				</div>
+			</div>
+		</div>
+
 		<div class="shop-layout">
-			<aside class="filters"><h2>Search</h2><input type="search" placeholder="Name" aria-label="Search shoes" [(ngModel)]="query" />
-				<h2>Price</h2><div class="field-row"><input type="number" min="0" placeholder="Min" aria-label="Minimum price" [(ngModel)]="minPrice" /><input type="number" min="0" placeholder="Max" aria-label="Maximum price" [(ngModel)]="maxPrice" /></div>
-				<h2>Type</h2><label class="filter-option" *ngFor="let category of categories"><input type="checkbox" [checked]="selectedCategories.has(category)" (change)="toggleCategory(category, $any($event.target).checked)" /><span>{{ category }}</span></label>
-				<button class="text-button clear-filters" type="button" (click)="resetFilters()">Clear filters</button>
+			<!-- Advanced Filters Sidebar -->
+			<aside class="filters-sidebar">
+				<div class="filter-header-row">
+					<h3 class="filter-heading">Filters</h3>
+					<button class="text-button" type="button" (click)="resetFilters()">Reset All</button>
+				</div>
+
+				<!-- Search Input -->
+				<div class="filter-group">
+					<label class="filter-title" for="searchField">Search Models</label>
+					<input id="searchField" type="search" placeholder="e.g. Runner, Leather, Chelsea..." [(ngModel)]="query" />
+				</div>
+
+				<!-- Collections Filter -->
+				<div class="filter-group">
+					<span class="filter-title">Collection / Range</span>
+					<div class="filter-checkbox-list">
+						<label class="filter-checkbox-item" *ngFor="let cat of categories">
+							<input type="checkbox" [checked]="selectedCategories.has(cat)" (change)="toggleCategory(cat, $any($event.target).checked)" />
+							<span>{{ cat }}</span>
+							<span class="filter-item-count">({{ categoryCount(cat) }})</span>
+						</label>
+					</div>
+				</div>
+
+				<!-- Quick Budget Filter -->
+				<div class="filter-group">
+					<span class="filter-title">Price Range</span>
+					<div class="budget-pills">
+						<button type="button" class="budget-pill" [class.on]="minPrice === '' && maxPrice === ''" (click)="setBudgetFilter('', '')">All</button>
+						<button type="button" class="budget-pill" [class.on]="maxPrice === '100'" (click)="setBudgetFilter('', '100')">&lt; $100</button>
+						<button type="button" class="budget-pill" [class.on]="minPrice === '100' && maxPrice === '180'" (click)="setBudgetFilter('100', '180')">$100–180</button>
+						<button type="button" class="budget-pill" [class.on]="minPrice === '180'" (click)="setBudgetFilter('180', '')">$180+</button>
+					</div>
+					<div class="field-row" style="margin-top: 10px;">
+						<input type="number" min="0" placeholder="Min $" [(ngModel)]="minPrice" aria-label="Min price" />
+						<input type="number" min="0" placeholder="Max $" [(ngModel)]="maxPrice" aria-label="Max price" />
+					</div>
+				</div>
+
+				<!-- Size Filter Grid -->
+				<div class="filter-group">
+					<span class="filter-title">Filter by Size ({{ sizeSystem }})</span>
+					<div class="filter-size-grid">
+						<button type="button"
+							class="size-filter-btn"
+							[class.active]="selectedSizeFilter === null"
+							(click)="selectedSizeFilter = null">
+							All
+						</button>
+						<button *ngFor="let s of sizes"
+							type="button"
+							class="size-filter-btn"
+							[class.active]="selectedSizeFilter === s"
+							(click)="selectedSizeFilter = (selectedSizeFilter === s ? null : s)">
+							{{ getSizeLabel(s) }}
+						</button>
+					</div>
+				</div>
+
+				<!-- Badge / Tag Filter -->
+				<div class="filter-group">
+					<span class="filter-title">Status / Badge</span>
+					<select [(ngModel)]="selectedBadge" aria-label="Filter by badge">
+						<option value="all">All Styles</option>
+						<option value="Bestseller">Bestseller</option>
+						<option value="New Drop">New Drop</option>
+						<option value="Staff Pick">Staff Pick</option>
+						<option value="Limited">Limited Edition</option>
+						<option value="Sale -20%">On Sale</option>
+						<option value="Eco-Crafted">Eco-Crafted</option>
+					</select>
+				</div>
 			</aside>
-			<section class="results" aria-label="Products">
-				<div class="results-toolbar"><span class="muted">{{ filteredProducts.length }} styles</span><select aria-label="Sort products" [(ngModel)]="sort"><option value="feat">Featured</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option></select></div>
-				<div class="product-grid"><button class="product-card" *ngFor="let product of filteredProducts" type="button" (click)="openProduct(product)">
-					<span class="product-image"><img *ngIf="product.img; else shopPlaceholder" [src]="product.img" [alt]="product.name" loading="lazy" />
-						<ng-template #shopPlaceholder><span class="placeholder"><small>{{ product.cat }}</small><strong>{{ product.name }}</strong></span></ng-template>
-					</span><span class="product-name"><span>{{ product.name }}</span><span>{{ money(product.price) }}</span></span><span class="product-category">{{ product.cat }}</span>
-				</button></div>
-				<p class="empty-state" *ngIf="filteredProducts.length === 0">No shoes match those filters.</p>
+
+			<!-- Products Results -->
+			<section class="results-area">
+				<!-- Results Toolbar -->
+				<div class="results-toolbar">
+					<div class="results-stats">
+						<strong>{{ filteredProducts.length }}</strong> styles available
+						<span class="active-badge-tag" *ngIf="selectedBadge !== 'all'">· {{ selectedBadge }}</span>
+						<span class="active-badge-tag" *ngIf="selectedCategories.size">· {{ selectedCategories.size }} ranges selected</span>
+					</div>
+
+					<div class="toolbar-sort">
+						<label for="sortSelect" class="muted">Sort by:</label>
+						<select id="sortSelect" [(ngModel)]="sort">
+							<option value="feat">Featured</option>
+							<option value="rating">Highest Rated ★</option>
+							<option value="new">Newest Drops</option>
+							<option value="lo">Price: Low to High</option>
+							<option value="hi">Price: High to Low</option>
+						</select>
+					</div>
+				</div>
+
+				<!-- Grid -->
+				<div class="product-grid" *ngIf="filteredProducts.length > 0; else noProducts">
+					<div class="product-card" *ngFor="let product of filteredProducts" (click)="openProduct(product)">
+						<div class="card-badge" *ngIf="product.badge">{{ product.badge }}</div>
+						<button class="wishlist-btn"
+							type="button"
+							[class.active]="isWishlisted(product.id)"
+							(click)="toggleWishlist(product.id, $event)"
+							aria-label="Save to wishlist">
+							♥
+						</button>
+
+						<div class="product-image">
+							<img [src]="product.img" [alt]="product.name" loading="lazy" />
+						</div>
+
+						<div class="product-body">
+							<div class="product-rating-row">
+								<span class="stars">★★★★★</span>
+								<span class="rating-num">{{ product.rating }}</span>
+								<span class="reviews-count">({{ product.reviewCount }})</span>
+							</div>
+
+							<div class="product-name-row">
+								<h3 class="product-title">{{ product.name }}</h3>
+								<div class="price-container">
+									<span class="original-price" *ngIf="product.originalPrice">{{ money(product.originalPrice) }}</span>
+									<strong class="current-price">{{ money(product.price) }}</strong>
+								</div>
+							</div>
+
+							<p class="product-category-label">{{ product.cat }}</p>
+
+							<!-- Colorways -->
+							<div class="card-colorways" *ngIf="product.colorways?.length">
+								<span class="cw-dot"
+									*ngFor="let cw of product.colorways"
+									[style.background]="cw.hex"
+									[title]="cw.name">
+								</span>
+								<span class="cw-count">{{ product.colorways.length }} colors</span>
+							</div>
+
+							<div class="card-action-bar">
+								<button class="button primary small full-width" type="button" (click)="quickAdd(product, $event)">
+									Configure &amp; Add
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<ng-template #noProducts>
+					<div class="empty-state-box">
+						<h3>No matching footwear found</h3>
+						<p class="muted">Try adjusting your filters, budget, or search terms.</p>
+						<button class="button primary" type="button" (click)="resetFilters()">Clear All Filters</button>
+					</div>
+				</ng-template>
 			</section>
 		</div>
 	</section>
 
-	<section *ngSwitchCase="'cart'" class="standard-view"><h1 class="page-title">Your bag</h1>
-		<ng-container *ngIf="cartLines.length; else emptyCart"><div class="two-column"><div class="table-scroll"><table><thead><tr><th></th><th>Item</th><th>Qty</th><th>Total</th><th></th></tr></thead><tbody><tr *ngFor="let line of cartLines">
-			<td><span class="thumbnail"><img *ngIf="line.product.img; else cartPlaceholder" [src]="line.product.img" [alt]="line.product.name" /><ng-template #cartPlaceholder><span>{{ line.product.name }}</span></ng-template></span></td>
-			<td>{{ line.product.name }}<br /><span class="muted">Size {{ line.size }} · {{ money(line.product.price) }}</span></td>
-			<td><span class="quantity"><button type="button" aria-label="Decrease quantity" (click)="changeQuantity(line.idx, -1)">−</button><span>{{ line.qty }}</span><button type="button" aria-label="Increase quantity" (click)="changeQuantity(line.idx, 1)">+</button></span></td>
-			<td>{{ money(line.product.price * line.qty) }}</td><td><button class="text-button" type="button" (click)="removeFromCart(line.idx)">Remove</button></td>
-		</tr></tbody></table></div><aside class="summary-box"><div class="summary-total"><span>Subtotal</span><strong>{{ money(cartTotal) }}</strong></div><p class="muted">Shipping is calculated at the next step.</p><button class="button primary full-width" type="button" (click)="go(user ? 'checkout' : 'login', 'checkout')">Checkout</button></aside></div></ng-container>
-		<ng-template #emptyCart><p class="empty-state">Your bag is empty.</p><button class="button primary" type="button" (click)="go('shop')">Continue shopping</button></ng-template>
+	<!-- WISHLIST VIEW -->
+	<section *ngSwitchCase="'wishlist'" class="standard-view">
+		<div class="view-header">
+			<h1 class="page-title">Saved Wishlist</h1>
+			<p class="muted">Shoes you've bookmarked for your rotation.</p>
+		</div>
+
+		<div class="product-grid" *ngIf="wishlistedProducts.length > 0; else emptyWishlist">
+			<div class="product-card" *ngFor="let product of wishlistedProducts" (click)="openProduct(product)">
+				<button class="wishlist-btn active"
+					type="button"
+					(click)="toggleWishlist(product.id, $event)"
+					aria-label="Remove from wishlist">
+					♥
+				</button>
+				<div class="product-image">
+					<img [src]="product.img" [alt]="product.name" />
+				</div>
+				<div class="product-body">
+					<div class="product-name-row">
+						<h3 class="product-title">{{ product.name }}</h3>
+						<strong class="current-price">{{ money(product.price) }}</strong>
+					</div>
+					<p class="product-category-label">{{ product.cat }}</p>
+					<div class="card-action-bar">
+						<button class="button primary small full-width" type="button" (click)="quickAdd(product, $event)">
+							Add to Bag
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<ng-template #emptyWishlist>
+			<div class="empty-state-box">
+				<h3>Your wishlist is currently empty</h3>
+				<p class="muted">Tap the heart icon on any shoe to save it to your wishlist.</p>
+				<button class="button primary" type="button" (click)="go('shop')">Explore Catalog</button>
+			</div>
+		</ng-template>
 	</section>
 
-	<section *ngSwitchCase="'checkout'" class="standard-view"><ng-container *ngIf="user && cartLines.length; else checkoutUnavailable">
-		<h1 class="page-title">Shipping</h1><div class="two-column"><form class="store-form" (ngSubmit)="placeOrder()">
-			<label>Name<input type="text" name="shippingName" required autocomplete="name" [(ngModel)]="shipping.name" /></label><label>Phone<input type="tel" name="shippingPhone" required autocomplete="tel" [(ngModel)]="shipping.phone" /></label>
-			<label>Location / address<input type="text" name="shippingLocation" required [(ngModel)]="shipping.loc" /></label><label>ZIP code<input type="text" name="shippingZip" required pattern="[A-Za-z0-9 -]{3,10}" [(ngModel)]="shipping.zip" /></label>
-			<p class="error-message" *ngIf="formError">{{ formError }}</p><button class="button primary" type="submit">Place order · {{ money(cartTotal) }}</button>
-		</form><aside class="summary-box"><h2>Order</h2><div class="summary-line" *ngFor="let line of cartLines"><span>{{ line.qty }} × {{ line.product.name }} <span class="muted">({{ line.size }})</span></span><span>{{ money(line.product.price * line.qty) }}</span></div></aside></div>
-	</ng-container><ng-template #checkoutUnavailable><div class="store-form"><h2>Log in to check out</h2><p class="muted">Your bag is ready when you are.</p><button class="button primary" type="button" (click)="go('login', 'checkout')">Log in</button></div></ng-template></section>
+	<!-- CART / BAG VIEW -->
+	<section *ngSwitchCase="'cart'" class="standard-view">
+		<div class="view-header">
+			<h1 class="page-title">Shopping Bag</h1>
+			<p class="muted">{{ cartCount }} item(s) ready for checkout.</p>
+		</div>
 
-	<section *ngSwitchCase="'done'" class="store-form completion"><h1 class="page-title">Order placed</h1><p class="muted">Thanks. Your order and shipping details have been saved.</p><button class="button primary" type="button" (click)="go('shop')">Keep shopping</button></section>
+		<ng-container *ngIf="cartLines.length > 0; else emptyCart">
+			<!-- Free Shipping Meter -->
+			<div class="shipping-meter-box">
+				<div class="meter-text">
+					<span *ngIf="freeShippingThresholdRemaining > 0">
+						Add <strong>{{ money(freeShippingThresholdRemaining) }}</strong> more to unlock <strong>FREE Express Courier Shipping</strong>!
+					</span>
+					<span *ngIf="freeShippingThresholdRemaining === 0" class="meter-success">
+						🎉 Congratulations! You have unlocked <strong>FREE Express Courier Shipping</strong>!
+					</span>
+				</div>
+				<div class="meter-bar">
+					<div class="meter-fill" [style.width.%]="freeShippingProgress"></div>
+				</div>
+			</div>
 
-	<section *ngSwitchCase="'login'" class="store-form"><form (ngSubmit)="login()"><h1 class="page-title">Log in</h1><p class="muted">Enter your name and phone number. New here? We'll create your account.</p>
-		<label>Name<input type="text" name="loginName" required autocomplete="name" [(ngModel)]="loginName" /></label><label>Phone<input type="tel" name="loginPhone" required autocomplete="tel" [(ngModel)]="loginPhone" /></label>
-		<p class="error-message" *ngIf="formError">{{ formError }}</p><button class="button primary" type="submit">Continue</button><p class="muted admin-hint">Admin demo: name <strong>admin</strong>, phone <strong>0000</strong>.</p>
-	</form></section>
+			<div class="two-column-cart">
+				<!-- Cart Table -->
+				<div class="cart-items-table">
+					<div class="cart-item-row" *ngFor="let line of cartLines">
+						<div class="item-photo" (click)="openProduct(line.product)">
+							<img [src]="line.product.img" [alt]="line.product.name" />
+						</div>
 
-	<section *ngSwitchCase="'account'" class="standard-view"><ng-container *ngIf="user; else accountLogin"><h1 class="page-title">Hello, {{ user.name }}</h1><p class="muted">{{ user.phone }}<span *ngIf="user.loc"> · {{ user.loc }} {{ user.zip }}</span></p>
-		<button class="button outline small" type="button" (click)="logout()">Log out</button><h2 class="section-title">Orders</h2>
-		<div class="table-scroll" *ngIf="userOrders.length; else noOrders"><table><thead><tr><th>#</th><th>Items</th><th>Total</th><th>Ship to</th></tr></thead><tbody><tr *ngFor="let order of userOrders"><td>{{ order.id }}</td><td><span *ngFor="let item of order.items; let last = last">{{ item.qty }}× {{ item.name }} ({{ item.size }})<br *ngIf="!last" /></span></td><td>{{ money(order.total) }}</td><td>{{ order.loc }}, {{ order.zip }}</td></tr></tbody></table></div>
-		<ng-template #noOrders><p class="empty-state">No orders yet.</p></ng-template></ng-container><ng-template #accountLogin><button class="button primary" type="button" (click)="go('login')">Log in</button></ng-template></section>
+						<div class="item-details">
+							<div class="item-title-row">
+								<h3 class="item-name" (click)="openProduct(line.product)">{{ line.product.name }}</h3>
+								<button class="remove-btn" type="button" (click)="removeFromCart(line.idx)" title="Remove item">✕</button>
+							</div>
 
-	<section *ngSwitchCase="'admin'" class="standard-view"><ng-container *ngIf="user?.role === 'admin'; else adminLogin"><h1 class="page-title admin-title">Admin</h1>
-		<div class="tabs"><button *ngFor="let tab of ['products', 'orders', 'users']" type="button" [class.active]="adminTab === tab" (click)="adminTab = $any(tab)">{{ tab | titlecase }} ({{ adminTabCount($any(tab)) }})</button></div>
-		<section *ngIf="adminTab === 'products'"><form class="add-product-form" (ngSubmit)="addProduct()"><input type="text" name="productName" placeholder="Name" required [(ngModel)]="productDraft.name" /><input type="number" name="productPrice" placeholder="Price" min="1" step="0.01" required [(ngModel)]="productDraft.price" />
-			<select name="productCategory" [(ngModel)]="productDraft.cat"><option *ngFor="let category of categories" [ngValue]="category">{{ category }}</option></select><input type="color" name="productColor" aria-label="Colour" [(ngModel)]="productDraft.color" /><button class="button primary" type="submit">Add shoe</button></form>
-			<p class="bulk-row"><button class="button outline small" type="button" (click)="openBulkPicker()">Bulk import photos</button><span class="muted">Select multiple images. Files named after a shoe are matched automatically.</span></p>
-			<div class="table-scroll"><table><thead><tr><th></th><th>Name</th><th>Type</th><th>Price</th><th></th></tr></thead><tbody><tr *ngFor="let product of data.products"><td><span class="thumbnail admin-thumbnail"><img *ngIf="product.img; else adminPlaceholder" [src]="product.img" [alt]="product.name" /><ng-template #adminPlaceholder><span>{{ product.name }}</span></ng-template></span></td>
-				<td>{{ product.name }}</td><td>{{ product.cat }}</td><td>{{ money(product.price) }}</td><td class="admin-actions"><button class="text-button" type="button" (click)="requestProductPhoto(product.id)">Photo</button><button class="text-button" type="button" (click)="setProductPhotoUrl(product)">URL</button><button class="text-button danger" type="button" (click)="deleteProduct(product)">Delete</button></td>
-			</tr></tbody></table></div></section>
-		<div class="table-scroll" *ngIf="adminTab === 'orders'"><table><thead><tr><th>#</th><th>Items</th><th>Total</th><th>Ship to</th></tr></thead><tbody><tr *ngFor="let order of data.orders"><td>{{ order.id }}</td><td><span *ngFor="let item of order.items">{{ item.qty }}× {{ item.name }} ({{ item.size }})<br /></span></td><td>{{ money(order.total) }}</td><td>{{ order.loc }}, {{ order.zip }}</td></tr></tbody></table><p class="empty-state" *ngIf="!data.orders.length">No orders yet.</p></div>
-		<div class="table-scroll" *ngIf="adminTab === 'users'"><table><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Role</th><th>Address</th></tr></thead><tbody><tr *ngFor="let account of data.users"><td>{{ account.id }}</td><td>{{ account.name }}</td><td>{{ account.phone }}</td><td>{{ account.role }}</td><td>{{ account.loc }} {{ account.zip }}</td></tr></tbody></table></div>
-	</ng-container><ng-template #adminLogin><button class="button primary" type="button" (click)="go('login')">Log in</button></ng-template></section>
+							<div class="item-specs-pills">
+								<span class="spec-pill">Size: {{ getSizeLabel(line.size) }}</span>
+								<span class="spec-pill" *ngIf="line.width">Width: {{ line.width }}</span>
+								<span class="spec-pill" *ngIf="line.colorway">Color: {{ line.colorway }}</span>
+								<span class="spec-pill insole-pill" *ngIf="line.insole">{{ line.insole }}</span>
+							</div>
+
+							<div class="item-bottom-row">
+								<div class="quantity-stepper">
+									<button type="button" aria-label="Decrease quantity" (click)="changeQuantity(line.idx, -1)">−</button>
+									<span>{{ line.qty }}</span>
+									<button type="button" aria-label="Increase quantity" (click)="changeQuantity(line.idx, 1)">+</button>
+								</div>
+								<div class="item-price-calc">
+									<small class="muted" *ngIf="line.qty > 1">{{ money(line.itemPrice) }} each · </small>
+									<strong class="item-total-price">{{ money(line.lineTotal) }}</strong>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Order Summary Box -->
+				<aside class="summary-box">
+					<h2 class="summary-heading">Order Summary</h2>
+
+					<!-- Promo Code Section -->
+					<div class="coupon-section">
+						<label class="coupon-label" for="couponCode">Promo Code / Voucher</label>
+						<div class="coupon-input-row" *ngIf="!appliedCoupon">
+							<input id="couponCode" type="text" placeholder="e.g. COOKED20" [(ngModel)]="couponInput" />
+							<button class="button outline small" type="button" (click)="applyCoupon()">Apply</button>
+						</div>
+						<p class="error-message" *ngIf="couponError">{{ couponError }}</p>
+
+						<div class="applied-coupon-pill" *ngIf="appliedCoupon">
+							<span>Code <strong>{{ appliedCoupon.code }}</strong> applied!</span>
+							<button class="text-button" type="button" (click)="removeCoupon()">Remove</button>
+						</div>
+					</div>
+
+					<div class="summary-line">
+						<span>Merchandise Subtotal</span>
+						<strong>{{ money(cartSubtotal) }}</strong>
+					</div>
+
+					<div class="summary-line discount-line" *ngIf="couponDiscount > 0">
+						<span>Voucher Discount</span>
+						<strong>−{{ money(couponDiscount) }}</strong>
+					</div>
+
+					<div class="summary-line">
+						<span>Estimated Shipping</span>
+						<span *ngIf="shippingCost === 0" class="free-tag">FREE</span>
+						<span *ngIf="shippingCost > 0">{{ money(shippingCost) }}</span>
+					</div>
+
+					<div class="summary-divider"></div>
+
+					<div class="summary-total-row">
+						<span>Estimated Total</span>
+						<strong class="total-amount">{{ money(cartTotal) }}</strong>
+					</div>
+
+					<button class="button primary full-width checkout-btn" type="button" (click)="go(user ? 'checkout' : 'login', 'checkout')">
+						Proceed to Checkout
+					</button>
+
+					<div class="security-badges">
+						<span>🔒 256-Bit SSL Encrypted Checkout</span>
+						<span>⚡ 30-Day Hassle-Free Returns</span>
+					</div>
+				</aside>
+			</div>
+		</ng-container>
+
+		<ng-template #emptyCart>
+			<div class="empty-state-box">
+				<h3>Your shopping bag is currently empty</h3>
+				<p class="muted">Add a pair of handcrafted shoes to begin your checkout.</p>
+				<button class="button primary" type="button" (click)="go('shop')">Explore Catalog</button>
+			</div>
+		</ng-template>
+	</section>
+
+	<!-- CHECKOUT VIEW -->
+	<section *ngSwitchCase="'checkout'" class="standard-view">
+		<ng-container *ngIf="user && cartLines.length > 0; else checkoutUnavailable">
+			<div class="view-header">
+				<h1 class="page-title">Delivery &amp; Checkout</h1>
+				<p class="muted">Shipping to {{ user.name }}</p>
+			</div>
+
+			<div class="two-column-cart">
+				<form class="checkout-form" (ngSubmit)="placeOrder()">
+					<h2 class="form-section-title">1. Shipping Address</h2>
+
+					<div class="form-grid">
+						<label>
+							<span class="field-label">Recipient Full Name</span>
+							<input type="text" name="name" required autocomplete="name" [(ngModel)]="shipping.name" />
+						</label>
+						<label>
+							<span class="field-label">Phone Number (for Courier SMS updates)</span>
+							<input type="tel" name="phone" required autocomplete="tel" [(ngModel)]="shipping.phone" />
+						</label>
+						<label class="col-span-2">
+							<span class="field-label">Street Address / Apartment / Suite</span>
+							<input type="text" name="loc" required placeholder="e.g. 742 Evergreen Terrace" [(ngModel)]="shipping.loc" />
+						</label>
+						<label>
+							<span class="field-label">Postal / ZIP Code</span>
+							<input type="text" name="zip" required pattern="[A-Za-z0-9 -]{3,10}" [(ngModel)]="shipping.zip" />
+						</label>
+						<label>
+							<span class="field-label">Delivery Instructions (Optional)</span>
+							<input type="text" name="notes" placeholder="e.g. Leave by front door" [(ngModel)]="shipping.notes" />
+						</label>
+					</div>
+
+					<h2 class="form-section-title" style="margin-top: 28px;">2. Courier Speed</h2>
+					<div class="delivery-options">
+						<label class="delivery-radio-card" [class.selected]="shippingMethod === 'standard'">
+							<input type="radio" name="delivery" [value]="'standard'" [(ngModel)]="shippingMethod" />
+							<div class="radio-body">
+								<strong>Carbon-Neutral Standard (3–5 Business Days)</strong>
+								<small class="muted">Dispatched via DHL Green Carrier with tracking</small>
+							</div>
+							<span class="delivery-price">{{ cartSubtotal >= 150 ? 'FREE' : '$10' }}</span>
+						</label>
+
+						<label class="delivery-radio-card" [class.selected]="shippingMethod === 'express'">
+							<input type="radio" name="delivery" [value]="'express'" [(ngModel)]="shippingMethod" />
+							<div class="radio-body">
+								<strong>Priority Express Courier (24–48 Hours)</strong>
+								<small class="muted">Signature required, dispatched in specialized wooden shoe box</small>
+							</div>
+							<span class="delivery-price">$15</span>
+						</label>
+					</div>
+
+					<h2 class="form-section-title" style="margin-top: 28px;">3. Payment Method</h2>
+					<div class="simulated-payment-box">
+						<div class="payment-tabs">
+							<span class="pay-chip active">💳 Credit Card</span>
+							<span class="pay-chip"> Pay</span>
+							<span class="pay-chip">Klarna 3-Pay ($0 interest)</span>
+						</div>
+						<p class="muted" style="margin: 8px 0 0; font-size: 13px;">
+							Demo Mode: Orders are safely simulated in this browser session. No actual charge is processed.
+						</p>
+					</div>
+
+					<p class="error-message" *ngIf="formError">{{ formError }}</p>
+
+					<button class="button primary checkout-submit-btn" type="submit">
+						Place Order · {{ money(cartTotal) }}
+					</button>
+				</form>
+
+				<aside class="summary-box">
+					<h2 class="summary-heading">Order Breakdown</h2>
+					<div class="summary-cart-items">
+						<div class="summary-item-row" *ngFor="let line of cartLines">
+							<div class="summary-thumb"><img [src]="line.product.img" [alt]="line.product.name" /></div>
+							<div class="summary-text">
+								<strong>{{ line.qty }} × {{ line.product.name }}</strong>
+								<small class="muted">Size {{ getSizeLabel(line.size) }} · {{ line.width }}</small>
+							</div>
+							<span class="summary-price">{{ money(line.lineTotal) }}</span>
+						</div>
+					</div>
+
+					<div class="summary-divider"></div>
+
+					<div class="summary-line">
+						<span>Subtotal</span>
+						<span>{{ money(cartSubtotal) }}</span>
+					</div>
+					<div class="summary-line discount-line" *ngIf="couponDiscount > 0">
+						<span>Discount ({{ appliedCoupon?.code }})</span>
+						<span>−{{ money(couponDiscount) }}</span>
+					</div>
+					<div class="summary-line">
+						<span>Shipping</span>
+						<span>{{ shippingCost === 0 ? 'FREE' : money(shippingCost) }}</span>
+					</div>
+
+					<div class="summary-divider"></div>
+
+					<div class="summary-total-row">
+						<span>Total Due</span>
+						<strong class="total-amount">{{ money(cartTotal) }}</strong>
+					</div>
+				</aside>
+			</div>
+		</ng-container>
+
+		<ng-template #checkoutUnavailable>
+			<div class="empty-state-box">
+				<h2>Sign in to proceed to Checkout</h2>
+				<p class="muted">Log in or create a quick account with your name and phone number.</p>
+				<button class="button primary" type="button" (click)="go('login', 'checkout')">Continue to Login</button>
+			</div>
+		</ng-template>
+	</section>
+
+	<!-- ORDER CONFIRMATION VIEW -->
+	<section *ngSwitchCase="'done'" class="standard-view">
+		<div class="order-confirmation-card" *ngIf="lastOrder">
+			<div class="confirm-icon">✓</div>
+			<span class="eyebrow">Order Placed Successfully</span>
+			<h1 class="page-title">Thank you, {{ lastOrder.name }}</h1>
+			<p class="muted">
+				Your shoes are being hand-inspected and prepared for dispatch.
+			</p>
+
+			<div class="order-tracking-badge">
+				<span>Tracking Reference:</span>
+				<strong>{{ lastOrder.trackingNo }}</strong>
+			</div>
+
+			<div class="order-details-card">
+				<div class="summary-line">
+					<span>Delivery Address</span>
+					<strong>{{ lastOrder.loc }}, {{ lastOrder.zip }}</strong>
+				</div>
+				<div class="summary-line">
+					<span>Courier Service</span>
+					<strong>{{ lastOrder.shippingMethod }}</strong>
+				</div>
+				<div class="summary-line">
+					<span>Order Total</span>
+					<strong>{{ money(lastOrder.total) }}</strong>
+				</div>
+			</div>
+
+			<div class="confirmation-actions">
+				<button class="button primary" type="button" (click)="go('shop')">Continue Shopping</button>
+				<button class="button outline" type="button" (click)="go('account')">View Order in Account</button>
+			</div>
+		</div>
+	</section>
+
+	<!-- LOGIN VIEW -->
+	<section *ngSwitchCase="'login'" class="store-form-page">
+		<form class="store-form" (ngSubmit)="login()">
+			<h1 class="page-title">Welcome to Soleworks</h1>
+			<p class="muted">Enter your name and phone number. New customer? We'll create your atelier profile instantly.</p>
+
+			<label>
+				<span class="field-label">Your Name</span>
+				<input type="text" name="name" required autocomplete="name" placeholder="e.g. Marcus Vance" [(ngModel)]="loginName" />
+			</label>
+			<label>
+				<span class="field-label">Phone Number</span>
+				<input type="tel" name="phone" required autocomplete="tel" placeholder="e.g. +1 555 0192" [(ngModel)]="loginPhone" />
+			</label>
+
+			<p class="error-message" *ngIf="formError">{{ formError }}</p>
+
+			<button class="button primary full-width" type="submit">Sign In / Register</button>
+
+			<div class="admin-hint-card">
+				<strong>Administrator Demo:</strong>
+				<span>Name: <code>admin</code> · Phone: <code>0000</code></span>
+			</div>
+		</form>
+	</section>
+
+	<!-- ACCOUNT VIEW -->
+	<section *ngSwitchCase="'account'" class="standard-view">
+		<ng-container *ngIf="user; else accountLogin">
+			<div class="account-header">
+				<div>
+					<h1 class="page-title">Atelier Member: {{ user.name }}</h1>
+					<p class="muted">
+						Phone: {{ user.phone }}
+						<span *ngIf="user.loc">· Address: {{ user.loc }} ({{ user.zip }})</span>
+					</p>
+				</div>
+				<button class="button outline small" type="button" (click)="logout()">Sign Out</button>
+			</div>
+
+			<h2 class="section-title" style="margin-top: 36px;">Order History</h2>
+			<div class="orders-table-wrapper" *ngIf="userOrders.length > 0; else noOrders">
+				<table class="data-table">
+					<thead>
+						<tr>
+							<th>Order #</th>
+							<th>Date</th>
+							<th>Items &amp; Specs</th>
+							<th>Status</th>
+							<th>Total</th>
+							<th>Ship To</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let order of userOrders">
+							<td><strong>{{ order.trackingNo || ('#' + order.id) }}</strong></td>
+							<td class="muted">{{ order.date | date:'mediumDate' }}</td>
+							<td>
+								<div *ngFor="let item of order.items" class="order-item-desc">
+									{{ item.qty }}× <strong>{{ item.name }}</strong>
+									<small class="muted">({{ getSizeLabel(item.size) }} · {{ item.width }})</small>
+								</div>
+							</td>
+							<td><span class="status-pill">{{ order.status || 'Processing' }}</span></td>
+							<td><strong>{{ money(order.total) }}</strong></td>
+							<td>{{ order.loc }}, {{ order.zip }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<ng-template #noOrders>
+				<div class="empty-state-box">
+					<p class="muted">You haven't placed any orders yet.</p>
+					<button class="button primary small" type="button" (click)="go('shop')">Start Shopping</button>
+				</div>
+			</ng-template>
+		</ng-container>
+
+		<ng-template #accountLogin>
+			<button class="button primary" type="button" (click)="go('login')">Sign In</button>
+		</ng-template>
+	</section>
+
+	<!-- ADMIN VIEW -->
+	<section *ngSwitchCase="'admin'" class="standard-view">
+		<ng-container *ngIf="user?.role === 'admin'; else adminLogin">
+			<h1 class="page-title">Store Management</h1>
+			<div class="tabs">
+				<button *ngFor="let tab of ['products', 'orders', 'users']"
+					type="button"
+					[class.active]="adminTab === tab"
+					(click)="adminTab = $any(tab)">
+					{{ tab | titlecase }} ({{ adminTabCount($any(tab)) }})
+				</button>
+			</div>
+
+			<!-- Products Tab -->
+			<section *ngIf="adminTab === 'products'">
+				<form class="add-product-form" (ngSubmit)="addProduct()">
+					<input type="text" name="name" placeholder="Shoe Name" required [(ngModel)]="productDraft.name" />
+					<input type="number" name="price" placeholder="Price ($)" min="1" step="0.01" required [(ngModel)]="productDraft.price" />
+					<select name="cat" [(ngModel)]="productDraft.cat">
+						<option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+					</select>
+					<select name="badge" [(ngModel)]="productDraft.badge">
+						<option value="New Drop">New Drop</option>
+						<option value="Bestseller">Bestseller</option>
+						<option value="Staff Pick">Staff Pick</option>
+						<option value="Limited">Limited</option>
+						<option value="Sale -20%">Sale</option>
+						<option value="Eco-Crafted">Eco-Crafted</option>
+					</select>
+					<input type="color" name="color" [(ngModel)]="productDraft.color" aria-label="Color accent" />
+					<button class="button primary" type="submit">Add Shoe</button>
+				</form>
+
+				<p class="bulk-row">
+					<button class="button outline small" type="button" (click)="openBulkPicker()">Bulk Import Photos</button>
+					<span class="muted">Select multiple images to pair automatically by filename.</span>
+				</p>
+
+				<div class="table-scroll">
+					<table class="data-table">
+						<thead>
+							<tr>
+								<th>Photo</th>
+								<th>Name</th>
+								<th>Collection</th>
+								<th>Badge</th>
+								<th>Price</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let product of data.products">
+								<td>
+									<div class="admin-thumb"><img [src]="product.img" [alt]="product.name" /></div>
+								</td>
+								<td><strong>{{ product.name }}</strong></td>
+								<td>{{ product.cat }}</td>
+								<td><span class="status-pill">{{ product.badge }}</span></td>
+								<td>{{ money(product.price) }}</td>
+								<td class="admin-actions">
+									<button class="text-button" type="button" (click)="requestProductPhoto(product.id)">Upload Photo</button>
+									<button class="text-button" type="button" (click)="setProductPhotoUrl(product)">URL</button>
+									<button class="text-button danger" type="button" (click)="deleteProduct(product)">Delete</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<!-- Orders Tab -->
+			<section *ngIf="adminTab === 'orders'">
+				<div class="table-scroll" *ngIf="data.orders.length > 0; else noAdminOrders">
+					<table class="data-table">
+						<thead>
+							<tr>
+								<th>Tracking #</th>
+								<th>Date</th>
+								<th>Customer</th>
+								<th>Items</th>
+								<th>Total</th>
+								<th>Shipping Address</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let order of data.orders">
+								<td><strong>{{ order.trackingNo || ('#' + order.id) }}</strong></td>
+								<td class="muted">{{ order.date | date:'short' }}</td>
+								<td>{{ order.name }}<br /><small class="muted">{{ order.phone }}</small></td>
+								<td>
+									<div *ngFor="let item of order.items">
+										{{ item.qty }}× {{ item.name }} ({{ item.size }}, {{ item.width }})
+									</div>
+								</td>
+								<td><strong>{{ money(order.total) }}</strong></td>
+								<td>{{ order.loc }}, {{ order.zip }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<ng-template #noAdminOrders><p class="muted">No orders in database yet.</p></ng-template>
+			</section>
+
+			<!-- Users Tab -->
+			<section *ngIf="adminTab === 'users'">
+				<div class="table-scroll">
+					<table class="data-table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Phone</th>
+								<th>Role</th>
+								<th>Saved Address</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let account of data.users">
+								<td>{{ account.id }}</td>
+								<td><strong>{{ account.name }}</strong></td>
+								<td>{{ account.phone }}</td>
+								<td><span class="status-pill">{{ account.role }}</span></td>
+								<td>{{ account.loc || 'None' }} {{ account.zip }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</section>
+		</ng-container>
+
+		<ng-template #adminLogin><button class="button primary" type="button" (click)="go('login')">Sign In</button></ng-template>
+	</section>
+
 </main>
 
-<footer class="site-footer"><span>© Soleworks. Demo store — data is saved in this browser only. Product images: <a href="https://unsplash.com/license" target="_blank" rel="noreferrer">Unsplash License</a>.</span><span>Shipping &amp; returns · Size guide · Contact</span></footer>
-<dialog #productDialog class="product-dialog" aria-label="Product details" (click)="closeOnBackdrop($event)"><button class="dialog-close" type="button" aria-label="Close" (click)="productDialog.close()">×</button>
-	<div class="dialog-layout" *ngIf="selectedProduct as product"><div class="dialog-image"><img *ngIf="product.img; else dialogPlaceholder" [src]="product.img" [alt]="product.name" /><ng-template #dialogPlaceholder><span class="placeholder"><small>{{ product.cat }}</small><strong>{{ product.name }}</strong></span></ng-template></div>
-		<div class="dialog-info"><span class="muted">{{ product.cat }}</span><h2>{{ product.name }}</h2><strong class="dialog-price">{{ money(product.price) }}</strong><span class="field-label">Select size (EU)</span>
-			<div class="size-grid"><button *ngFor="let size of sizes" type="button" [class.active]="selectedSize === size.toString()" (click)="selectedSize = size.toString()">{{ size }}</button></div>
-			<p class="error-message" *ngIf="formError">{{ formError }}</p><button class="button primary full-width" type="button" (click)="addToCart(product)">Add to bag</button><p class="muted dialog-note">Free returns within 30 days. Ships in 2–3 working days.</p>
+<!-- Detailed Product Modal / Configurator Dialog -->
+<dialog #productDialog class="product-dialog" aria-label="Shoe configuration" (click)="closeOnBackdrop($event)">
+	<button class="dialog-close" type="button" aria-label="Close dialog" (click)="productDialog.close()">×</button>
+
+	<div class="dialog-layout" *ngIf="selectedProduct as product">
+		<!-- Image Presentation -->
+		<div class="dialog-gallery">
+			<div class="dialog-main-photo">
+				<img [src]="product.img" [alt]="product.name" />
+			</div>
+			<div class="dialog-badge-floating" *ngIf="product.badge">{{ product.badge }}</div>
+		</div>
+
+		<!-- Customizer Info -->
+		<div class="dialog-info">
+			<div class="dialog-top-meta">
+				<span class="dialog-category">{{ product.cat }}</span>
+				<div class="dialog-rating">
+					<span class="stars">★★★★★</span>
+					<span>{{ product.rating }} ({{ product.reviewCount }} verified reviews)</span>
+				</div>
+			</div>
+
+			<h2 class="dialog-product-title">{{ product.name }}</h2>
+
+			<div class="dialog-price-row">
+				<span class="original-price" *ngIf="product.originalPrice">{{ money(product.originalPrice) }}</span>
+				<strong class="dialog-current-price">{{ money(product.price) }}</strong>
+				<span class="vat-tag">Includes import duties &amp; complimentary shipping</span>
+			</div>
+
+			<p class="dialog-description">{{ product.description }}</p>
+
+			<!-- Colorway Selector -->
+			<div class="option-block" *ngIf="product.colorways?.length">
+				<div class="option-header">
+					<span class="option-title">1. Colorway</span>
+					<strong class="option-selection">{{ selectedColorway }}</strong>
+				</div>
+				<div class="colorway-buttons">
+					<button *ngFor="let cw of product.colorways"
+						type="button"
+						class="colorway-btn"
+						[class.selected]="selectedColorway === cw.name"
+						(click)="selectColorway(cw)">
+						<span class="cw-circle" [style.background]="cw.hex"></span>
+						<span>{{ cw.name }}</span>
+					</button>
+				</div>
+			</div>
+
+			<!-- Size Selector -->
+			<div class="option-block">
+				<div class="option-header">
+					<span class="option-title">2. Select Size</span>
+					<div class="segmented-control small">
+						<button type="button" [class.on]="sizeSystem === 'EU'" (click)="sizeSystem = 'EU'">EU</button>
+						<button type="button" [class.on]="sizeSystem === 'US'" (click)="sizeSystem = 'US'">US</button>
+						<button type="button" [class.on]="sizeSystem === 'UK'" (click)="sizeSystem = 'UK'">UK</button>
+					</div>
+				</div>
+				<div class="size-buttons-grid">
+					<button *ngFor="let size of sizes"
+						type="button"
+						class="size-tile"
+						[class.active]="selectedSize === size.toString()"
+						(click)="selectedSize = size.toString()">
+						{{ getSizeLabel(size) }}
+					</button>
+				</div>
+				<small class="fit-advice-note">✓ True to size fit. 94% of wearers report exact true-to-fit sizing.</small>
+			</div>
+
+			<!-- Width Selector -->
+			<div class="option-block">
+				<div class="option-header">
+					<span class="option-title">3. Foot Width Option</span>
+					<strong class="option-selection">{{ selectedWidth }}</strong>
+				</div>
+				<div class="width-buttons">
+					<button *ngFor="let w of widths"
+						type="button"
+						class="pill-choice-btn"
+						[class.selected]="selectedWidth === w"
+						(click)="selectedWidth = w">
+						{{ w }}
+					</button>
+				</div>
+			</div>
+
+			<!-- Insole / Cushioning Choice -->
+			<div class="option-block">
+				<div class="option-header">
+					<span class="option-title">4. Insole &amp; Arch Support</span>
+					<strong class="option-selection">{{ selectedInsole }}</strong>
+				</div>
+				<div class="insole-buttons">
+					<button *ngFor="let ins of insoleOptions"
+						type="button"
+						class="pill-choice-btn"
+						[class.selected]="selectedInsole === ins"
+						(click)="selectedInsole = ins">
+						{{ ins }}
+					</button>
+				</div>
+			</div>
+
+			<!-- Live Stock Alert -->
+			<div class="stock-status-pill">
+				<span class="green-dot"></span>
+				<span>In Stock at Atelier — Ships within 24 hours via Priority Express</span>
+			</div>
+
+			<!-- Error display if size not chosen -->
+			<p class="error-message" *ngIf="formError">{{ formError }}</p>
+
+			<!-- Action buttons -->
+			<div class="dialog-cta-row">
+				<button class="button primary full-width" type="button" (click)="addToCart(product)">
+					Add to Bag · {{ money(product.price + (selectedInsole.includes('+ $15') ? 15 : 0)) }}
+				</button>
+				<button class="wishlist-toggle-btn"
+					type="button"
+					[class.active]="isWishlisted(product.id)"
+					(click)="toggleWishlist(product.id, $event)"
+					title="Save to wishlist">
+					♥
+				</button>
+			</div>
+
+			<!-- Modal Specs Tabs -->
+			<div class="modal-tabs">
+				<div class="modal-tabs-nav">
+					<button type="button" [class.on]="activeModalTab === 'specs'" (click)="activeModalTab = 'specs'">Craft &amp; Specs</button>
+					<button type="button" [class.on]="activeModalTab === 'reviews'" (click)="activeModalTab = 'reviews'">Reviews ({{ product.reviews.length }})</button>
+					<button type="button" [class.on]="activeModalTab === 'shipping'" (click)="activeModalTab = 'shipping'">Shipping &amp; Trial</button>
+				</div>
+
+				<div class="modal-tab-content" *ngIf="activeModalTab === 'specs'">
+					<div class="specs-grid">
+						<div><span>Upper:</span><strong>{{ product.specs.upper }}</strong></div>
+						<div><span>Outsole:</span><strong>{{ product.specs.outsole }}</strong></div>
+						<div><span>Weight:</span><strong>{{ product.specs.weight }}</strong></div>
+						<div><span>Heel Drop:</span><strong>{{ product.specs.drop }}</strong></div>
+					</div>
+				</div>
+
+				<div class="modal-tab-content" *ngIf="activeModalTab === 'reviews'">
+					<div class="mini-reviews-list">
+						<div class="mini-review" *ngFor="let rev of product.reviews">
+							<div class="rev-header">
+								<strong>{{ rev.author }}</strong>
+								<span class="stars">★★★★★</span>
+							</div>
+							<p class="rev-comment">"{{ rev.comment }}"</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal-tab-content" *ngIf="activeModalTab === 'shipping'">
+					<ul class="shipping-perks-list">
+						<li>🚚 <strong>Free Express Delivery:</strong> Complimentary on orders over $150.</li>
+						<li>🔄 <strong>30-Day Risk-Free Trial:</strong> Try them at home. Free exchanges if you need another size.</li>
+						<li>🌱 <strong>Carbon-Neutral Packaging:</strong> Shipped in 100% recycled unbleached kraft boxes.</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>
 </dialog>
+
+<!-- Hidden Upload Inputs -->
 <input #photoInput class="visually-hidden" type="file" accept="image/*" (change)="uploadProductPhoto($event)" />
 <input #bulkInput class="visually-hidden" type="file" accept="image/*" multiple (change)="bulkUpload($event)" />
-<div class="toast" [class.visible]="!!toastMessage" role="status">{{ toastMessage }}</div>
+
+<!-- Global Floating Toast Notification -->
+<div class="toast-notification" [class.visible]="!!toastMessage" role="status">
+	<span class="toast-dot"></span>
+	<span>{{ toastMessage }}</span>
+</div>
+
+<!-- Site Footer -->
+<footer class="site-footer">
+	<div class="footer-top">
+		<div class="footer-brand-col">
+			<div class="footer-logo">
+				<span class="logo-title">Soleworks</span>
+				<span class="logo-sub">Atelier Footwear</span>
+			</div>
+			<p class="footer-about">
+				Master footwear crafted without compromise. Engineered across Portugal and Italy using full-grain leathers,
+				Vibram® rubber compounds, and orthopedic ergonomics.
+			</p>
+		</div>
+
+		<div class="footer-links-col">
+			<h4>Collections</h4>
+			<button type="button" (click)="openCategory('Sport / Runner')">Running Lab</button>
+			<button type="button" (click)="openCategory('Heavy Duty')">Heavy Duty &amp; Work</button>
+			<button type="button" (click)="openCategory('Classic')">Heritage Classics</button>
+			<button type="button" (click)="openCategory('Leather')">Artisan Leather</button>
+			<button type="button" (click)="openCategory('Fancy')">Formal Atelier</button>
+		</div>
+
+		<div class="footer-links-col">
+			<h4>Client Services</h4>
+			<span>30-Day Wear Guarantee</span>
+			<span>Complimentary Size Swaps</span>
+			<span>Shoe Care &amp; Resoling Guide</span>
+			<span>Shipping &amp; Customs Duty</span>
+		</div>
+
+		<div class="footer-newsletter-col">
+			<h4>Join the Atelier Society</h4>
+			<p class="muted">Be first to access limited edition silhouettes and seasonal batch releases.</p>
+			<form class="newsletter-form" (submit)="$event.preventDefault(); showToast('Subscribed to Atelier Society!')">
+				<input type="email" placeholder="Your email address" required />
+				<button class="button primary small" type="submit">Join</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="footer-bottom">
+		<span>© 2026 Soleworks Atelier Ltd. All rights reserved.</span>
+		<span>Crafted for high performance · Zero carbon footprint</span>
+	</div>
+</footer>
