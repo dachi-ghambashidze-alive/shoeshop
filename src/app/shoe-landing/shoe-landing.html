@@ -1192,6 +1192,40 @@
 	<span>{{ toastMessage }}</span>
 </div>
 
+<!-- Chatbot Widget -->
+<div class="chat-widget" [class.open]="chatOpen">
+	<button class="chat-fab" (click)="chatOpen = !chatOpen" type="button" aria-label="Chat with us">
+		<span class="chat-fab-icon" *ngIf="!chatOpen">💬</span>
+		<span class="chat-fab-icon" *ngIf="chatOpen">✕</span>
+	</button>
+	<div class="chat-panel" *ngIf="chatOpen">
+		<div class="chat-header">
+			<span class="chat-header-dot"></span>
+			<span class="chat-header-title">Soleworks Assistant</span>
+		</div>
+		<div class="chat-messages" #chatMessagesContainer>
+			<div *ngFor="let msg of chatMessages" class="chat-msg" [class.bot]="msg.from === 'bot'" [class.user]="msg.from === 'user'">
+				<div class="chat-bubble">{{ msg.text }}</div>
+				<div *ngIf="msg.suggestions?.length" class="chat-suggestions">
+					<div *ngFor="let product of msg.suggestions" class="chat-suggestion">
+						<img *ngIf="product.img" [src]="product.img" [alt]="product.name" />
+						<div><strong>{{ product.name }}</strong><small>{{ product.cat }} · ${{ product.price }}</small></div>
+					</div>
+				</div>
+			</div>
+			<div *ngIf="chatMessages.length === 0" class="chat-welcome">
+				<p>👋 Hi! I'm your shoe assistant. Ask me about styles, sizing, shipping, or anything else!</p>
+			</div>
+			<div *ngIf="chatQuickReplies.length > 0" class="chat-quick-replies">
+				<button *ngFor="let qr of chatQuickReplies" class="chat-qr-btn" type="button" (click)="sendChat(qr)">{{ qr }}</button>
+			</div>
+		</div>
+		<form class="chat-input-row" (submit)="$event.preventDefault(); sendChat(chatInput)">
+			<input type="text" class="chat-input" [(ngModel)]="chatInput" placeholder="Type a message..." autocomplete="off" />
+			<button class="chat-send-btn" type="submit" [disabled]="!chatInput.trim()">→</button>
+		</form>
+	</div>
+</div>
 <!-- Site Footer -->
 <footer class="site-footer">
 	<div class="footer-top">

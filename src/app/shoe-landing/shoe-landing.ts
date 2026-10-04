@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { getBotResponse, type BotReply, type BotSuggestion } from '../bot_API';
 
 export type Page = 'home' | 'shop' | 'cart' | 'checkout' | 'login' | 'account' | 'admin' | 'done' | 'wishlist';
 export type Category = 'Sport / Runner' | 'Heavy Duty' | 'Classic' | 'Leather' | 'Everyday' | 'Fancy';
@@ -109,6 +110,12 @@ export interface CartLine extends CartItem {
   lineTotal: number;
 }
 
+interface ChatMessage {
+  text: string;
+  from: 'bot' | 'user';
+  suggestions?: BotSuggestion[];
+}
+
 const STORE_KEY = 'soleworks_db_v2';
 const PHOTO_MIGRATION_KEY = 'soleworks_photos_v3';
 
@@ -165,6 +172,10 @@ export class ShoeLandingComponent implements OnInit {
   selectedBadge = 'all';
   selectedSizeFilter: number | null = null;
   sizeSystem: 'EU' | 'US' | 'UK' = 'EU';
+  chatOpen = false;
+  chatInput = '';
+  chatMessages: ChatMessage[] = [];
+  chatQuickReplies = ['🥾 Hiking Shoes', '🏃 Running Shoes', '📏 Size Guide', '🏷️ Discount Codes'];
 
   // Hero interactive showcase
   heroShoeIndex = 0;
@@ -240,6 +251,31 @@ export class ShoeLandingComponent implements OnInit {
 
   get cartCount(): number {
     return this.data.cart.reduce((count, item) => count + item.qty, 0);
+  }
+
+  sendChat(message: string): void {
+    const text = message.trim();
+    if (!text) return;
+
+    this.chatMessages.push({ text, from: 'user' });
+    this.chatInput = '';
+
+    const catalog = this.data.products.map((product) => ({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      cat: product.cat,
+      badge: product.badge,
+      img: product.img,
+      desc: product.description,
+    }));
+    const response: BotReply = getBotResponse(text, catalog);
+    this.chatMessages.push({
+      text: response.reply,
+      from: 'bot',
+      suggestions: response.suggestions,
+    });
+    this.chatQuickReplies = response.quickReplies ?? [];
   }
 
   get wishlistCount(): number {
