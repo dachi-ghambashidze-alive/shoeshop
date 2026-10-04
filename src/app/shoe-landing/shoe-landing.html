@@ -1221,7 +1221,7 @@
 			</div>
 		</div>
 		<form class="chat-input-row" (submit)="$event.preventDefault(); sendChat(chatInput)">
-			<input type="text" class="chat-input" [(ngModel)]="chatInput" placeholder="Type a message..." autocomplete="off" />
+			<input type="text" class="chat-input" [(ngModel)]="chatInput" name="chatInput" placeholder="Type a message..." autocomplete="off" />
 			<button class="chat-send-btn" type="submit" [disabled]="!chatInput.trim()">→</button>
 		</form>
 	</div>
