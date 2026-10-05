@@ -283,7 +283,7 @@ export class ShoeLandingComponent implements OnInit {
   }
 
   get featuredProduct(): Product | undefined {
-    return this.data.products[this.heroShoeIndex] || this.data.products.find((p) => p.featured) || this.data.products[0];
+    return this.heroProducts[this.heroShoeIndex] || this.data.products.find((p) => p.featured) || this.data.products[0];
   }
 
   get heroProducts(): Product[] {
@@ -353,9 +353,7 @@ export class ShoeLandingComponent implements OnInit {
 
   get cartTotal(): number {
     const afterDiscount = Math.max(0, this.cartSubtotal - this.couponDiscount);
-    // When in bag/standard summary, return merchandise total to match test expectations.
-    // In checkout, return final order payable amount.
-    return this.view === 'checkout' ? afterDiscount + this.shippingCost : afterDiscount;
+    return afterDiscount + this.shippingCost;
   }
 
   get freeShippingThresholdRemaining(): number {
@@ -504,7 +502,7 @@ export class ShoeLandingComponent implements OnInit {
       this.showToast('Removed from wishlist');
     } else {
       this.data.wishlist.push(productId);
-      this.showToast('Saved to wishlist ❤️');
+      this.showToast('Saved to wishlist');
     }
     this.save();
   }
@@ -1414,7 +1412,7 @@ export class ShoeLandingComponent implements OnInit {
     }
   }
 
-  private showToast(message: string): void {
+  showToast(message: string): void {
     this.toastMessage = message;
     clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => (this.toastMessage = ''), 2400);

@@ -1,7 +1,7 @@
 <!-- Announcement Bar -->
 <aside class="announcement-bar" aria-label="Store announcement">
 	<div class="announcement-content">
-		<span>🍂 <strong>Autumn 2026 Collection</strong> · Atelier Footwear</span>
+		<span>Autumn 2026 Collection · Atelier Footwear</span>
 		<span class="announcement-sep">•</span>
 		<span>Use code <mark class="promo-badge">COOKED20</mark> for 20% off all orders</span>
 		<span class="announcement-sep">•</span>
@@ -196,7 +196,7 @@
 			</div>
 
 			<div class="product-grid">
-				<div class="product-card" *ngFor="let product of data.products.slice(0, 8)" (click)="openProduct(product)">
+				<div class="product-card" *ngFor="let product of data.products.slice(0, 8)" tabindex="0" (keydown.enter)="$event.target === $event.currentTarget && openProduct(product)" (click)="openProduct(product)">
 					<div class="card-badge" *ngIf="product.badge">{{ product.badge }}</div>
 					<button class="wishlist-btn"
 						type="button"
@@ -408,7 +408,7 @@
 
 				<!-- Grid -->
 				<div class="product-grid" *ngIf="filteredProducts.length > 0; else noProducts">
-					<div class="product-card" *ngFor="let product of filteredProducts" (click)="openProduct(product)">
+					<div class="product-card" *ngFor="let product of filteredProducts" tabindex="0" (keydown.enter)="$event.target === $event.currentTarget && openProduct(product)" (click)="openProduct(product)">
 						<div class="card-badge" *ngIf="product.badge">{{ product.badge }}</div>
 						<button class="wishlist-btn"
 							type="button"
@@ -477,7 +477,7 @@
 		</div>
 
 		<div class="product-grid" *ngIf="wishlistedProducts.length > 0; else emptyWishlist">
-			<div class="product-card" *ngFor="let product of wishlistedProducts" (click)="openProduct(product)">
+			<div class="product-card" *ngFor="let product of wishlistedProducts" tabindex="0" (keydown.enter)="$event.target === $event.currentTarget && openProduct(product)" (click)="openProduct(product)">
 				<button class="wishlist-btn active"
 					type="button"
 					(click)="toggleWishlist(product.id, $event)"
@@ -685,7 +685,7 @@
 								<strong>Priority Express Courier (24–48 Hours)</strong>
 								<small class="muted">Signature required, dispatched in specialized wooden shoe box</small>
 							</div>
-							<span class="delivery-price">$15</span>
+							<span class="delivery-price">{{ cartSubtotal >= 150 ? 'FREE' : '$15' }}</span>
 						</label>
 					</div>
 

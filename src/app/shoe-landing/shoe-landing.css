@@ -1,4 +1,5 @@
-:host {
+:root,
+app-shoe-landing {
 	--ink: #0e0f11;
 	--ink-soft: #242529;
 	--muted: #6b6a65;
@@ -11,9 +12,9 @@
 	--gold-glow: rgba(197, 155, 63, 0.16);
 	--green: #237836;
 	--green-bg: #edf8ee;
-	--radius-sm: 8px;
-	--radius-md: 14px;
-	--radius-lg: 22px;
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
 	--radius-full: 9999px;
 	--shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.04);
 	--shadow-elevated: 0 12px 36px rgba(0, 0, 0, 0.08);
@@ -2654,6 +2655,57 @@ h1, h2, h3, h4, p {
 	.size-buttons-grid {
 		grid-template-columns: repeat(4, 1fr);
 	}
+}
+
+/* Refinements: flatter surfaces, larger touch targets, mobile layout */
+.site-header { background: #fff; backdrop-filter: none; }
+.hero-showcase { background: var(--soft); box-shadow: none; }
+.hero-showcase::after { display: none; }
+.pulse-dot { animation: none; box-shadow: none; }
+.hero-card { box-shadow: none; }
+.meter-fill { background: var(--ink); }
+.page-content { animation: none; }
+.button { border-radius: 4px; }
+.button.small { height: 40px; }
+.product-card:hover { transform: none; box-shadow: var(--shadow-subtle); }
+.product-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.main-nav button,
+.size-tile,
+.pill-choice-btn,
+.budget-pill,
+.segmented-control button { min-height: 40px; }
+.quantity-stepper button { width: 40px; height: 40px; }
+.wishlist-btn { width: 40px; height: 40px; }
+.toast-notification { right: auto; left: 28px; }
+.table-scroll,
+.orders-table-wrapper { overflow-x: auto; }
+
+@media (max-width: 820px) {
+	.announcement-bar { white-space: normal; text-align: center; }
+	.announcement-content { flex-wrap: wrap; gap: 2px 10px; }
+	.announcement-sep { display: none; }
+	.site-header { position: static; }
+	.main-nav { width: 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+	.main-nav button { flex: none; white-space: nowrap; }
+	.hero-showcase { padding: 28px 20px; }
+	.hero-stats { flex-wrap: wrap; gap: 14px; }
+	.stat-sep { display: none; }
+	.testimonials-section { padding: 28px 18px; }
+	.order-confirmation-card { padding: 28px 18px; }
+	.confirmation-actions { flex-direction: column; }
+	.cart-item-row { grid-template-columns: 72px 1fr; gap: 14px; }
+	.data-table { min-width: 640px; }
+	.dialog-gallery { padding: 16px; }
+	.dialog-info { padding: 22px 18px; }
+	.payment-tabs { flex-wrap: wrap; }
+	.toast-notification { left: 16px; right: 16px; bottom: 16px; border-radius: 4px; }
+	.chat-widget { right: 16px; bottom: 16px; }
+}
+
+@media (max-width: 480px) {
+	.hero-actions .button { flex: 1 1 100%; }
+	.checkout-form { padding: 20px 16px; }
+	.summary-box { padding: 20px 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
